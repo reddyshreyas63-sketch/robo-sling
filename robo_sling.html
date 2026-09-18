@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Robo Sling</title>
+<style>
+*{box-sizing:border-box;user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111827;font-family:Arial,sans-serif}
+canvas{display:block;width:100vw;height:100vh}
+.ui{position:absolute;top:22px;left:25px;right:25px;display:flex;justify-content:space-between;pointer-events:none}
+.panel{background:rgba(15,35,55,.9);color:white;padding:14px 20px;border-radius:15px;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.title{font-size:28px;font-weight:900;letter-spacing:1px}
+.sub{font-size:12px;opacity:.7;margin-top:3px}
+.stats{display:flex;gap:25px;font-weight:700}
+.stats b{color:#ffd166}
+#help{position:absolute;left:25px;bottom:20px;background:rgba(15,35,55,.9);color:white;padding:12px 18px;border-radius:12px;font-size:14px}
+#power{position:absolute;left:25px;bottom:67px;width:230px;display:none;color:white;font-size:12px;font-weight:bold}
+#bar{height:14px;background:rgba(0,0,0,.5);border-radius:9px;overflow:hidden;margin-top:5px}
+#fill{height:100%;width:0%;background:#ffd166}
+button{position:absolute;right:25px;bottom:20px;border:0;background:#111827;color:white;padding:13px 21px;border-radius:11px;font-weight:800;cursor:pointer}
+#serialBtn{position:absolute;right:25px;bottom:68px;background:#183b56}
+#status{position:absolute;right:25px;bottom:112px;color:white;background:rgba(15,35,55,.9);padding:7px 12px;border-radius:9px;font-size:12px}
+#msg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:none;background:rgba(10,20,30,.95);color:white;padding:25px 40px;border-radius:18px;font-size:28px;font-weight:900;text-align:center}
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<div class="ui">
+  <div class="panel">
+    <div class="title">ROBO SLING</div>
+    <div class="sub">PHYSICS TARGET CHALLENGE</div>
+  </div>
+  <div class="panel stats">
+    <div>SCORE <b id="score">0</b></div>
+    <div>SHOTS <b id="shots">0</b></div>
+    <div>TARGETS <b id="targets">5</b></div>
+  </div>
+</div>
+
+<div id="power">
+  LAUNCH POWER
+  <div id="bar"><div id="fill"></div></div>
+</div>
+
+<div id="help">MOUSE: DRAG SLINGSHOT POUCH → RELEASE<br>KEYBOARD SIMULATION: W/S AIM · A/D POWER · SPACE FIRE</div>
+<button id="serialBtn">CONNECT CONTROLLER</button>
+<button id="reset">RESET</button>
+<div id="status">CONTROL: MOUSE</div>
+<div id="msg"></div>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+const W=1500;
+const H=720;
+
+canvas.width=W;
+canvas.height=H;
+
+const G=900;
+const GROUND=590;
+const POWER_MULT=7.0;
+const MAX_PULL=155;
+const PIG_BOUNCE=0.06;
+
+const SLING={x:150,y:440};
+
+let score=0;
+let shots=0;
+let dragging=false;
+let gameWon=false;
+
+let currentRobo=null;
+let robos=[];
+
+// Software/hardware control layer.
+let controlMode="mouse";
+let hardwareAim=0;      // -1 = up, 0 = level, +1 = down
+let hardwarePower=0;    // 0..1
+let serialPort=null;
+let serialReader=null;
+let serialConnected=false;
+let serialBuffer="";
+let blocks=[];
+let pigs=[];
+let stars=[];
+let rings=[];
+let particles=[];
+
+
+/* =========================
+   OBJECT CREATION
+========================= */
+
+let pouch={x:SLING.x,y:SLING.y};
+
+function newRobo(){
+  return {
+    x:SLING.x-65,
+    y:SLING.y,
+    vx:0,
+    vy:0,
+    radius:26,
+    rotation:0,
+    ready:true
+  };
+}
+
+function makeBlock(x,y,w,h){
+  return {
+    x,y,w,h,
+    vx:0,
+    vy:0,
+    health:100,
+    maxHealth:100,
+    destroyed:false,
+    falling:false
+  };
+}
+
+function makePig(x,y){
+  return {
+    x,y,
+    radius:29,
+    vx:0,
+    vy:0,
+    alive:true,
+    supported:true
+  };
+}
+
+
+/* =========================
+   LEVEL
+========================= */
+
+function createLevel(){
+
+  blocks=[
+    makeBlock(990,555,340,35),
+
+    makeBlock(980,440,30,115),
+    makeBlock(1300,440,30,115),
+
+    makeBlock(1060,440,30,115),
+    makeBlock(1230,440,30,115),
+
+    makeBlock(1030,410,270,30),
+
+    makeBlock(1090,335,30,75),
+    makeBlock(1260,335,30,75),
+
+    makeBlock(1070,305,240,30),
+
+    makeBlock(1140,230,120,25)
+  ];
+
+  pigs=[
+    makePig(1050,380),
+    makePig(1120,380),
+    makePig(1280,380),
+    makePig(1200,270),
+    makePig(1200,515)
+  ];
+
+  stars=[
+    {x:470,y:270,r:17,taken:false,points:150},
+    {x:700,y:190,r:17,taken:false,points:150},
+    {x:900,y:250,r:17,taken:false,points:200},
+    {x:1370,y:220,r:17,taken:false,points:250}
+  ];
+
+  rings=[
+    {x:560,y:400,r:40,taken:false,points:100},
+    {x:780,y:350,r:40,taken:false,points:100},
+    {x:930,y:150,r:40,taken:false,points:100}
+  ];
+}
+
+
+/* =========================
+   RESET / UI
+========================= */
+
+function resetGame(){
+
+  score=0;
+  shots=0;
+  dragging=false;
+  gameWon=false;
+
+  robos=[];
+  particles=[];
+
+  createLevel();
+
+  currentRobo=newRobo();
+  if(controlMode==="serial") updateHardwarePouch();
+
+  updateUI();
+
+  document.getElementById("power").style.display="none";
+  document.getElementById("msg").style.display="none";
+}
+
+function updateUI(){
+
+  document.getElementById("score").textContent=score;
+  document.getElementById("shots").textContent=shots;
+
+  document.getElementById("targets").textContent=
+    pigs.filter(p=>p.alive).length;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+function setControlMode(mode){
+  controlMode=mode;
+  updateControllerStatus();
+}
+
+function updateControllerStatus(){
+  const status=document.getElementById("status");
+  if(controlMode!=="serial"){
+    status.textContent="CONTROL: MOUSE";
+    return;
+  }
+
+  const p=Math.round(hardwarePower*100);
+  const a=Math.round(hardwareAim*100);
+  status.textContent=`CONTROL: CONTROLLER  |  POWER ${p}%  |  AIM ${a}`;
+}
+
+function updateHardwarePouch(){
+  if(!currentRobo || !currentRobo.ready) return;
+
+  const power=Math.max(0,Math.min(1,hardwarePower));
+  const aim=Math.max(-1,Math.min(1,hardwareAim));
+
+  // Keep the ORIGINAL slingshot geometry: power is pull distance,
+  // aim is vertical position. This keeps the existing physics intact.
+  const pull=power*MAX_PULL;
+  const maxAimOffset=MAX_PULL*0.55;
+  const dx=-Math.max(25, pull);
+  const dy=aim*maxAimOffset;
+
+  pouch.x=SLING.x+dx;
+  pouch.y=SLING.y+dy;
+
+  currentRobo.x=pouch.x;
+  currentRobo.y=pouch.y;
+
+  document.getElementById("fill").style.width=(power*100)+"%";
+}
+
+function handleSerialLine(line){
+  line=line.trim();
+  if(!line) return;
+
+  const upper=line.toUpperCase();
+
+  if(upper.startsWith("AIM:")){
+    const raw=parseFloat(line.substring(4));
+    if(Number.isFinite(raw)){
+      hardwareAim = raw > 1 || raw < -1
+        ? Math.max(-1,Math.min(1,raw/100))
+        : Math.max(-1,Math.min(1,raw));
+      if(controlMode==="serial") updateHardwarePouch();
+      updateControllerStatus();
+    }
+    return;
+  }
+
+  if(upper.startsWith("POWER:")){
+    const raw=parseFloat(line.substring(6));
+    if(Number.isFinite(raw)){
+      hardwarePower = raw > 1
+        ? Math.max(0,Math.min(1,raw/100))
+        : Math.max(0,Math.min(1,raw));
+      if(controlMode==="serial") updateHardwarePouch();
+      updateControllerStatus();
+    }
+    return;
+  }
+
+  if(upper==="FIRE"){
+    if(controlMode==="serial" && currentRobo && currentRobo.ready && !gameWon){
+      updateHardwarePouch();
+      fireRobo();
+    }
+    return;
+  }
+
+  if(upper==="RESET"){
+    resetGame();
+    updateControllerStatus();
+    return;
+  }
+}
+
+async function readSerial(){
+  if(!serialReader) return;
+  try{
+    while(true){
+      const {value,done}=await serialReader.read();
+      if(done) break;
+      if(value){
+        serialBuffer+=new TextDecoder().decode(value);
+        const lines=serialBuffer.split(/\r?\n/);
+        serialBuffer=lines.pop()||"";
+        for(const line of lines) handleSerialLine(line);
+      }
+    }
+  }catch(err){
+    console.error("Serial read error",err);
+  }finally{
+    try{serialReader.releaseLock();}catch(e){}
+    serialReader=null;
+  }
+}
+
+async function connectSerial(){
+  if(!("serial" in navigator)){
+    alert("Web Serial is not supported here. Use Chrome or Edge.");
+    return;
+  }
+  try{
+    serialPort=await navigator.serial.requestPort();
+    await serialPort.open({baudRate:115200});
+
+    serialConnected=true;
+    setControlMode("serial");
+    document.getElementById("serialBtn").textContent="CONTROLLER CONNECTED";
+
+    // Start reading BEFORE applying the current controller state.
+    serialReader=serialPort.readable.getReader();
+    readSerial();
+
+    // Give the reader one browser tick to start receiving Arduino data.
+    setTimeout(()=>{
+      if(serialConnected && controlMode==="serial") updateHardwarePouch();
+    },50);
+  }catch(err){
+    console.error(err);
+    serialConnected=false;
+    setControlMode("mouse");
+    alert("ESP32 connection was not established.");
+  }
+}
+
+async function disconnectSerial(){
+  try{
+    if(serialReader){try{await serialReader.cancel();}catch(e){}}
+    if(serialPort){try{await serialPort.close();}catch(e){}}
+  }finally{
+    serialReader=null;
+    serialPort=null;
+    serialConnected=false;
+    setControlMode("mouse");
+    document.getElementById("serialBtn").textContent="CONNECT CONTROLLER";
+  }
+}
+
+document.getElementById("serialBtn").addEventListener("click",async()=>{
+  if(serialConnected) await disconnectSerial();
+  else await connectSerial();
+});
+
+function pos(e){
+
+  const r=canvas.getBoundingClientRect();
+
+  return {
+    x:(e.clientX-r.left)*W/r.width,
+    y:(e.clientY-r.top)*H/r.height
+  };
+}
+
+canvas.addEventListener("pointerdown",e=>{
+
+  if(!currentRobo || !currentRobo.ready || gameWon)
+    return;
+
+  const p=pos(e);
+
+  const dx=p.x-currentRobo.x;
+  const dy=p.y-currentRobo.y;
+
+  if(Math.hypot(dx,dy)<60){
+
+    dragging=true;
+
+    canvas.setPointerCapture(e.pointerId);
+
+    document.getElementById("power").style.display="block";
+  }
+});
+
+
+canvas.addEventListener("pointermove",e=>{
+
+  if(!dragging || !currentRobo || !currentRobo.ready)
+    return;
+
+  const p=pos(e);
+
+  let dx=p.x-SLING.x;
+  let dy=p.y-SLING.y;
+
+  let d=Math.hypot(dx,dy);
+
+  if(d>MAX_PULL){
+
+    dx=dx/d*MAX_PULL;
+    dy=dy/d*MAX_PULL;
+
+    d=MAX_PULL;
+  }
+
+  if(dx>-25)
+    dx=-25;
+
+  currentRobo.x=SLING.x+dx;
+  currentRobo.y=SLING.y+dy;
+
+  document.getElementById("fill").style.width=
+    (d/MAX_PULL*100)+"%";
+});
+
+
+canvas.addEventListener("pointerup",()=>{
+
+  if(!dragging)
+    return;
+
+  dragging=false;
+
+  document.getElementById("power").style.display="none";
+
+  if(currentRobo && currentRobo.ready)
+    fireRobo();
+});
+
+
+/* =========================
+   FIRE ROBO
+========================= */
+
+function fireRobo(){
+
+  const r=currentRobo;
+
+  const dx=SLING.x-r.x;
+  const dy=SLING.y-r.y;
+
+  const pull=Math.hypot(dx,dy);
+
+  const damage=Math.max(
+    0,
+    Math.min(100,pull/MAX_PULL*100)
+  );
+
+  const fired={
+
+    x:r.x,
+    y:r.y,
+
+    vx:dx*POWER_MULT,
+    vy:dy*POWER_MULT,
+
+    radius:r.radius,
+
+    rotation:0,
+
+    active:true,
+
+    /*
+      IMPORTANT:
+      This starts FALSE.
+
+      The moment this Robo touches the ground,
+      it becomes TRUE and stays TRUE forever.
+    */
+    bounced:false,
+
+    /*
+      Launch power determines block damage.
+      Full pull = 100 damage.
+      98% pull = 98 damage.
+    */
+    damage:damage,
+
+    hitBlocks:new Set(),
+    hitPigs:new Set()
+  };
+
+  robos.push(fired);
+
+  currentRobo=null;
+
+  shots++;
+
+  updateUI();
+
+  burst(fired.x,fired.y,10);
+
+  setTimeout(()=>{
+
+    if(!gameWon && !currentRobo){
+      currentRobo=newRobo();
+      if(controlMode==="serial") updateHardwarePouch();
+    }
+
+  },2000);
+}
+
+
+/* =========================
+   ROBO PHYSICS
+========================= */
+
+function updateRobos(dt){
+
+  for(const r of robos){
+
+    if(!r.active)
+      continue;
+
+    r.vy+=G*dt;
+
+    r.vx*=Math.pow(.999,dt*60);
+    r.vy*=Math.pow(.999,dt*60);
+
+    r.x+=r.vx*dt;
+    r.y+=r.vy*dt;
+
+    r.rotation+=r.vx*dt*.018;
+
+
+    /*
+      GROUND COLLISION
+
+      This is the important part.
+
+      As soon as the Robo touches the ground:
+          bounced = true
+
+      It NEVER becomes false again.
+
+      Therefore this Robo can never damage a block
+      after a ground bounce.
+    */
+
+    if(r.y+r.radius>=GROUND){
+
+      r.y=GROUND-r.radius;
+
+      r.bounced=true;
+
+      if(Math.abs(r.vy)>30){
+
+        r.vy*=-0.72;
+
+      }else{
+
+        r.vy=0;
+      }
+
+      r.vx*=0.90;
+
+      if(Math.abs(r.vx)<15 && Math.abs(r.vy)<15)
+        r.active=false;
+    }
+
+
+    /*
+      WALL COLLISIONS
+    */
+
+    if(r.x+r.radius>W){
+
+      r.x=W-r.radius;
+      r.vx*=-.78;
+    }
+
+    if(r.x-r.radius<0){
+
+      r.x=r.radius;
+      r.vx*=-.78;
+    }
+
+
+    robotPigCollisions(r);
+    robotBlockCollisions(r);
+    bonusCollisions(r);
+  }
+}
+
+
+/* =========================
+   ROBO / PIG COLLISION
+========================= */
+
+function robotPigCollisions(r){
+
+  for(const p of pigs){
+
+    if(!p.alive || r.hitPigs.has(p))
+      continue;
+
+    const dx=p.x-r.x;
+    const dy=p.y-r.y;
+
+    const d=Math.hypot(dx,dy);
+
+    if(d>r.radius+p.radius)
+      continue;
+
+    r.hitPigs.add(p);
+
+    const speed=Math.hypot(r.vx,r.vy);
+
+    p.vx+=dx/Math.max(d,1)*speed*.10;
+    p.vy+=dy/Math.max(d,1)*speed*.04;
+
+    p.vy*=.15;
+
+
+    /*
+      Robo does NOT bounce because of a pig.
+      Its velocity is deliberately untouched.
+    */
+
+    if(speed>180)
+      killPig(p);
+  }
+}
+
+
+function killPig(p){
+
+  if(!p.alive)
+    return;
+
+  p.alive=false;
+
+  p.vx=0;
+  p.vy=0;
+
+  score+=100;
+
+  updateUI();
+
+  burst(p.x,p.y,28);
+}
+
+
+/* =========================
+   ROBO / BLOCK COLLISION
+========================= */
+
+function robotBlockCollisions(r){
+
+  for(const b of blocks){
+
+    if(b.destroyed || r.hitBlocks.has(b))
+      continue;
+
+    const cx=Math.max(
+      b.x,
+      Math.min(r.x,b.x+b.w)
+    );
+
+    const cy=Math.max(
+      b.y,
+      Math.min(r.y,b.y+b.h)
+    );
+
+    const dx=r.x-cx;
+    const dy=r.y-cy;
+
+    if(dx*dx+dy*dy>r.radius*r.radius)
+      continue;
+
+    r.hitBlocks.add(b);
+
+
+    /*
+      CRITICAL RULE
+
+      If this Robo has EVER bounced:
+
+          NO DAMAGE.
+
+      It can only push the block.
+
+      This includes:
+        - ground bounce
+        - previous block bounce
+        - any previous bounce event
+
+      bounced is never reset.
+    */
+
+    if(r.bounced === true){
+
+      pushBlock(b,r,.35);
+
+    }else{
+
+      damageBlock(b,r.damage,r);
+    }
+
+
+    /*
+      Physical collision response.
+
+      This does NOT change r.bounced.
+      Once true, it stays true.
+    */
+
+    if(Math.abs(dx)>Math.abs(dy)){
+
+      r.vx*=-.72;
+
+    }else{
+
+      r.vy*=-.72;
+    }
+  }
+}
+
+
+/* =========================
+   BLOCK PUSHING
+========================= */
+
+function pushBlock(b,r,factor){
+
+  const cx=b.x+b.w/2;
+  const cy=b.y+b.h/2;
+
+  const dx=cx-r.x;
+  const dy=cy-r.y;
+
+  const d=Math.max(Math.hypot(dx,dy),1);
+
+  const speed=Math.hypot(r.vx,r.vy);
+
+  b.vx+=dx/d*speed*factor;
+  b.vy+=dy/d*speed*factor;
+}
+
+
+/* =========================
+   BLOCK DAMAGE
+========================= */
+
+function damageBlock(b,damage,r){
+
+  if(b.destroyed)
+    return;
+
+  /*
+    Safety check:
+    A bounced Robo can NEVER deal damage.
+  */
+
+  if(r.bounced === true)
+    return;
+
+  b.health=Math.max(
+    0,
+    b.health-damage
+  );
+
+  pushBlock(b,r,.30);
+
+  burst(
+    r.x,
+    r.y,
+    Math.min(
+      8,
+      Math.max(2,Math.floor(damage/12))
+    )
+  );
+
+  if(b.health<=0)
+    destroyBlock(b);
+}
+
+
+function destroyBlock(b){
+
+  if(b.destroyed)
+    return;
+
+  b.destroyed=true;
+
+  score+=25;
+
+  updateUI();
+
+  burst(
+    b.x+b.w/2,
+    b.y+b.h/2,
+    25
+  );
+}
+
+
+/* =========================
+   BLOCK SUPPORT / PHYSICS
+========================= */
+
+function blockSupported(b){
+
+  if(b.destroyed)
+    return false;
+
+  if(b.y+b.h>=GROUND-3)
+    return true;
+
+  for(const o of blocks){
+
+    if(o===b || o.destroyed)
+      continue;
+
+    const horizontal=
+      b.x<o.x+o.w &&
+      b.x+b.w>o.x;
+
+    const vertical=
+      Math.abs(b.y+b.h-o.y)<7;
+
+    if(horizontal && vertical)
+      return true;
+  }
+
+  return false;
+}
+
+
+function updateBlocks(dt){
+
+  for(const b of blocks){
+
+    if(b.destroyed)
+      continue;
+
+    const supported=blockSupported(b);
+
+
+    if(!supported || Math.abs(b.vy)>8){
+
+      b.falling=true;
+      b.vy+=G*dt;
+
+    }else{
+
+      b.vy=0;
+    }
+
+
+    b.x+=b.vx*dt;
+    b.y+=b.vy*dt;
+
+    b.vx*=Math.pow(.985,dt*60);
+
+
+    /*
+      Ground collision
+    */
+
+    if(b.y+b.h>=GROUND){
+
+      b.y=GROUND-b.h;
+
+      if(Math.abs(b.vy)>35)
+        b.vy*=-.18;
+      else
+        b.vy=0;
+
+      b.vx*=.82;
+    }
+
+
+    if(b.x<0){
+
+      b.x=0;
+      b.vx*=-.2;
+    }
+
+    if(b.x+b.w>W){
+
+      b.x=W-b.w;
+      b.vx*=-.2;
+    }
+  }
+
+
+  /*
+    Basic block-to-block collision
+  */
+
+  for(let i=0;i<blocks.length;i++){
+
+    const a=blocks[i];
+
+    if(a.destroyed)
+      continue;
+
+    for(let j=i+1;j<blocks.length;j++){
+
+      const b=blocks[j];
+
+      if(b.destroyed)
+        continue;
+
+      const ox=Math.min(
+        a.x+a.w,
+        b.x+b.w
+      )-Math.max(a.x,b.x);
+
+      const oy=Math.min(
+        a.y+a.h,
+        b.y+b.h
+      )-Math.max(a.y,b.y);
+
+      if(ox<=0 || oy<=0)
+        continue;
+
+
+      if(oy<ox){
+
+        if(a.y<b.y){
+
+          a.y-=oy/2;
+          b.y+=oy/2;
+
+        }else{
+
+          a.y+=oy/2;
+          b.y-=oy/2;
+        }
+
+        const av=a.vy;
+        const bv=b.vy;
+
+        a.vy=bv*.15;
+        b.vy=av*.15;
+
+      }else{
+
+        if(a.x<b.x){
+
+          a.x-=ox/2;
+          b.x+=ox/2;
+
+        }else{
+
+          a.x+=ox/2;
+          b.x-=ox/2;
+        }
+
+        const av=a.vx;
+        const bv=b.vx;
+
+        a.vx=bv*.25;
+        b.vx=av*.25;
+      }
+    }
+  }
+}
+
+
+/* =========================
+   PIG PHYSICS
+========================= */
+
+function updatePigs(dt){
+
+  for(const p of pigs){
+
+    if(!p.alive)
+      continue;
+
+    let supportY=null;
+
+
+    /*
+      Ground support
+    */
+
+    if(p.y+p.radius>=GROUND-3)
+      supportY=GROUND-p.radius;
+
+
+    /*
+      Block support
+    */
+
+    for(const b of blocks){
+
+      if(b.destroyed)
+        continue;
+
+      if(
+        p.x>b.x-p.radius &&
+        p.x<b.x+b.w+p.radius &&
+        p.y<=b.y+5 &&
+        p.y+p.radius>=b.y-5
+      ){
+
+        if(
+          supportY===null ||
+          b.y-p.radius<supportY
+        ){
+
+          supportY=b.y-p.radius;
+        }
+      }
+    }
+
+
+    if(supportY!==null && p.vy>=0){
+
+      p.y=supportY;
+
+      if(p.vy>30)
+        p.vy*=-PIG_BOUNCE;
+      else
+        p.vy=0;
+
+      p.vx*=.70;
+
+    }else{
+
+      p.vy+=G*dt;
+    }
+
+
+    p.x+=p.vx*dt;
+    p.y+=p.vy*dt;
+
+    p.vx*=Math.pow(.985,dt*60);
+
+
+    if(p.y+p.radius>=GROUND){
+
+      p.y=GROUND-p.radius;
+
+      if(p.vy>30)
+        p.vy*=-PIG_BOUNCE;
+      else
+        p.vy=0;
+
+      p.vx*=.70;
+    }
+
+
+    /*
+      Falling block kills pig.
+    */
+
+    for(const b of blocks){
+
+      if(
+        b.destroyed ||
+        !b.falling ||
+        b.vy<40
+      )
+        continue;
+
+      const cx=Math.max(
+        b.x,
+        Math.min(p.x,b.x+b.w)
+      );
+
+      const cy=Math.max(
+        b.y,
+        Math.min(p.y,b.y+b.h)
+      );
+
+      const dx=p.x-cx;
+      const dy=p.y-cy;
+
+      if(
+        dx*dx+dy*dy<=p.radius*p.radius
+      ){
+
+        killPig(p);
+        break;
+      }
+    }
+  }
+}
+
+
+/* =========================
+   BONUS OBJECTS
+========================= */
+
+function bonusCollisions(r){
+
+  for(const s of stars){
+
+    if(s.taken)
+      continue;
+
+    if(
+      Math.hypot(
+        r.x-s.x,
+        r.y-s.y
+      )<r.radius+s.r
+    ){
+
+      s.taken=true;
+
+      score+=s.points;
+
+      updateUI();
+
+      burst(s.x,s.y,14);
+    }
+  }
+
+
+  for(const q of rings){
+
+    if(q.taken)
+      continue;
+
+    if(
+      Math.hypot(
+        r.x-q.x,
+        r.y-q.y
+      )<q.r
+    ){
+
+      q.taken=true;
+
+      score+=q.points;
+
+      updateUI();
+
+      burst(q.x,q.y,14);
+    }
+  }
+}
+
+
+/* =========================
+   PARTICLES
+========================= */
+
+function burst(x,y,n){
+
+  for(let i=0;i<n;i++){
+
+    const a=Math.random()*Math.PI*2;
+    const sp=60+Math.random()*220;
+
+    particles.push({
+      x,y,
+      vx:Math.cos(a)*sp,
+      vy:Math.sin(a)*sp,
+      life:.4+Math.random()*.6,
+      size:3+Math.random()*5
+    });
+  }
+}
+
+
+function updateParticles(dt){
+
+  for(
+    let i=particles.length-1;
+    i>=0;
+    i--
+  ){
+
+    const p=particles[i];
+
+    p.life-=dt;
+
+    p.vy+=500*dt;
+
+    p.x+=p.vx*dt;
+    p.y+=p.vy*dt;
+
+    if(p.life<=0)
+      particles.splice(i,1);
+  }
+}
+
+
+/* =========================
+   DRAWING
+========================= */
+
+function drawBackground(){
+
+  const g=ctx.createLinearGradient(
+    0,0,0,H
+  );
+
+  g.addColorStop(0,"#51b8e8");
+  g.addColorStop(1,"#d5f1ff");
+
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,W,H);
+
+
+  ctx.fillStyle="#ffd166";
+
+  ctx.beginPath();
+  ctx.arc(1160,110,55,0,Math.PI*2);
+  ctx.fill();
+
+
+  ctx.fillStyle="#8eb5a1";
+
+  ctx.beginPath();
+
+  ctx.moveTo(0,480);
+  ctx.lineTo(170,300);
+  ctx.lineTo(330,470);
+  ctx.lineTo(500,270);
+  ctx.lineTo(680,470);
+  ctx.lineTo(870,300);
+  ctx.lineTo(1050,470);
+  ctx.lineTo(1230,320);
+  ctx.lineTo(1500,470);
+
+  ctx.lineTo(1500,GROUND);
+  ctx.lineTo(0,GROUND);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  ctx.fillStyle="#6d9d72";
+
+  ctx.beginPath();
+
+  ctx.moveTo(0,500);
+
+  ctx.quadraticCurveTo(
+    250,400,
+    500,500
+  );
+
+  ctx.quadraticCurveTo(
+    750,390,
+    1000,500
+  );
+
+  ctx.quadraticCurveTo(
+    1250,400,
+    1500,490
+  );
+
+  ctx.lineTo(1500,GROUND);
+  ctx.lineTo(0,GROUND);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  ctx.fillStyle="#4d7d43";
+  ctx.fillRect(
+    0,
+    GROUND,
+    W,
+    H-GROUND
+  );
+
+  ctx.fillStyle="#70aa57";
+  ctx.fillRect(
+    0,
+    GROUND,
+    W,
+    10
+  );
+}
+
+
+function cloud(x,y,s){
+
+  ctx.save();
+
+  ctx.translate(x,y);
+  ctx.scale(s,s);
+
+  ctx.fillStyle="rgba(255,255,255,.75)";
+
+  ctx.beginPath();
+
+  ctx.arc(0,10,25,0,Math.PI*2);
+  ctx.arc(30,0,35,0,Math.PI*2);
+  ctx.arc(65,12,25,0,Math.PI*2);
+
+  ctx.fill();
+
+  ctx.fillRect(0,10,65,25);
+
+  ctx.restore();
+}
+
+
+function drawSling(){
+
+  const x=SLING.x;
+  const y=SLING.y;
+
+  ctx.lineCap="round";
+  ctx.lineWidth=18;
+  ctx.strokeStyle="#6b3f20";
+
+  ctx.beginPath();
+  ctx.moveTo(x,y+120);
+  ctx.lineTo(x-25,y+20);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x-25,y+20);
+  ctx.lineTo(x-55,y-60);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x-25,y+20);
+  ctx.lineTo(x+25,y-65);
+  ctx.stroke();
+
+
+  if(currentRobo && currentRobo.ready){
+
+    ctx.lineWidth=7;
+    ctx.strokeStyle="#3a2020";
+
+    ctx.beginPath();
+    ctx.moveTo(x-55,y-60);
+    ctx.lineTo(currentRobo.x,currentRobo.y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x+25,y-65);
+    ctx.lineTo(currentRobo.x,currentRobo.y);
+    ctx.stroke();
+  }
+}
+
+
+function drawRobo(r){
+
+  ctx.save();
+
+  ctx.translate(r.x,r.y);
+  ctx.rotate(r.rotation);
+
+  ctx.fillStyle="rgba(0,0,0,.18)";
+
+  ctx.beginPath();
+  ctx.ellipse(
+    3,8,25,20,
+    0,0,Math.PI*2
+  );
+  ctx.fill();
+
+
+  const g=ctx.createRadialGradient(
+    -9,-10,3,
+    0,0,30
+  );
+
+  g.addColorStop(0,"#edf7ff");
+  g.addColorStop(.45,"#9bb3c7");
+  g.addColorStop(1,"#526575");
+
+  ctx.fillStyle=g;
+
+  ctx.beginPath();
+  ctx.arc(0,0,26,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.strokeStyle="#263746";
+  ctx.lineWidth=3;
+  ctx.stroke();
+
+
+  ctx.fillStyle="#172632";
+
+  ctx.beginPath();
+  ctx.roundRect(
+    -19,-9,38,22,8
+  );
+  ctx.fill();
+
+
+  ctx.fillStyle="#69eaff";
+
+  ctx.beginPath();
+
+  ctx.arc(-9,1,4,0,Math.PI*2);
+  ctx.arc(9,1,4,0,Math.PI*2);
+
+  ctx.fill();
+
+
+  ctx.fillStyle="#ffb703";
+
+  ctx.beginPath();
+
+  ctx.moveTo(0,9);
+  ctx.lineTo(17,15);
+  ctx.lineTo(0,19);
+
+  ctx.closePath();
+  ctx.fill();
+
+
+  ctx.strokeStyle="#263746";
+  ctx.lineWidth=4;
+
+  ctx.beginPath();
+
+  ctx.moveTo(0,-25);
+  ctx.lineTo(0,-38);
+
+  ctx.stroke();
+
+
+  ctx.fillStyle="#ff4d6d";
+
+  ctx.beginPath();
+  ctx.arc(0,-41,5,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+
+function drawPig(p){
+
+  if(!p.alive)
+    return;
+
+  ctx.save();
+
+  ctx.translate(p.x,p.y);
+
+  const g=ctx.createRadialGradient(
+    -8,-10,2,
+    0,0,30
+  );
+
+  g.addColorStop(0,"#b8ed76");
+  g.addColorStop(1,"#3e8d45");
+
+  ctx.fillStyle=g;
+
+  ctx.beginPath();
+  ctx.arc(0,0,28,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.strokeStyle="#285a2d";
+  ctx.lineWidth=3;
+  ctx.stroke();
+
+  ctx.fillStyle="#152019";
+
+  ctx.beginPath();
+
+  ctx.arc(-9,-4,4,0,Math.PI*2);
+  ctx.arc(9,-4,4,0,Math.PI*2);
+  ctx.arc(0,9,4,0,Math.PI*2);
+
+  ctx.fill();
+
+  ctx.restore();
+}
+
+
+function drawBlock(b){
+
+  if(b.destroyed)
+    return;
+
+  const g=ctx.createLinearGradient(
+    b.x,b.y,
+    b.x+b.w,b.y
+  );
+
+  g.addColorStop(0,"#8d582f");
+  g.addColorStop(.5,"#c68a50");
+  g.addColorStop(1,"#80502c");
+
+  ctx.fillStyle=g;
+
+  ctx.fillRect(
+    b.x,
+    b.y,
+    b.w,
+    b.h
+  );
+
+  ctx.strokeStyle="#55331e";
+  ctx.lineWidth=3;
+
+  ctx.strokeRect(
+    b.x,
+    b.y,
+    b.w,
+    b.h
+  );
+
+  ctx.strokeStyle="rgba(70,40,20,.45)";
+  ctx.lineWidth=2;
+
+  for(
+    let y=b.y+8;
+    y<b.y+b.h;
+    y+=12
+  ){
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      b.x+5,
+      y
+    );
+
+    ctx.lineTo(
+      b.x+b.w-5,
+      y
+    );
+
+    ctx.stroke();
+  }
+}
+
+
+function drawStar(s){
+
+  if(s.taken)
+    return;
+
+  ctx.save();
+
+  ctx.translate(s.x,s.y);
+  ctx.rotate(performance.now()*.001);
+
+  ctx.fillStyle="#ffd166";
+  ctx.shadowColor="#ffd166";
+  ctx.shadowBlur=18;
+
+  ctx.beginPath();
+
+  for(let i=0;i<10;i++){
+
+    const a=-Math.PI/2+i*Math.PI/5;
+
+    const r=
+      i%2===0
+      ? s.r
+      : s.r*.42;
+
+    const x=Math.cos(a)*r;
+    const y=Math.sin(a)*r;
+
+    if(i===0)
+      ctx.moveTo(x,y);
+    else
+      ctx.lineTo(x,y);
+  }
+
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.shadowBlur=0;
+
+  ctx.restore();
+}
+
+
+function drawRing(q){
+
+  if(q.taken)
+    return;
+
+  ctx.save();
+
+  ctx.strokeStyle="#ffd166";
+  ctx.lineWidth=8;
+  ctx.shadowColor="#ffd166";
+  ctx.shadowBlur=15;
+
+  ctx.beginPath();
+
+  ctx.arc(
+    q.x,
+    q.y,
+    q.r,
+    0,
+    Math.PI*2
+  );
+
+  ctx.stroke();
+
+  ctx.shadowBlur=0;
+
+  ctx.restore();
+}
+
+
+/* =========================
+   TRAJECTORY
+========================= */
+
+function drawTrajectory(){
+
+  if(
+    !dragging ||
+    !currentRobo ||
+    !currentRobo.ready
+  )
+    return;
+
+  let x=currentRobo.x;
+  let y=currentRobo.y;
+
+  let vx=
+    (SLING.x-x)*POWER_MULT;
+
+  let vy=
+    (SLING.y-y)*POWER_MULT;
+
+  const dt=1/60;
+
+  ctx.save();
+
+  ctx.fillStyle="rgba(255,255,255,.85)";
+
+  for(let t=0;t<4;t+=dt){
+
+    vy+=G*dt;
+
+    vx*=Math.pow(.999,dt*60);
+    vy*=Math.pow(.999,dt*60);
+
+    x+=vx*dt;
+    y+=vy*dt;
+
+    if(y+26>=GROUND)
+      break;
+
+    if(
+      Math.floor(t*12)!==
+      Math.floor((t-dt)*12)
+    ){
+
+      ctx.beginPath();
+
+      ctx.arc(
+        x,
+        y,
+        4,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fill();
+    }
+  }
+
+  ctx.restore();
+}
+
+
+function drawParticles(){
+
+  for(const p of particles){
+
+    ctx.globalAlpha=
+      Math.max(0,p.life);
+
+    ctx.fillStyle="#ffd166";
+
+    ctx.beginPath();
+
+    ctx.arc(
+      p.x,
+      p.y,
+      p.size,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fill();
+  }
+
+  ctx.globalAlpha=1;
+}
+
+
+/* =========================
+   MAIN DRAW
+========================= */
+
+function draw(){
+
+  ctx.clearRect(
+    0,0,W,H
+  );
+
+  drawBackground();
+
+  cloud(180,110,1);
+  cloud(540,90,.8);
+  cloud(920,150,.7);
+
+  for(const b of blocks)
+    drawBlock(b);
+
+  for(const q of rings)
+    drawRing(q);
+
+  for(const st of stars)
+    drawStar(st);
+
+  for(const p of pigs)
+    drawPig(p);
+
+  for(const r of robos)
+    drawRobo(r);
+
+  drawSling();
+
+  drawTrajectory();
+
+  if(currentRobo)
+    drawRobo(currentRobo);
+
+  drawParticles();
+}
+
+
+/* =========================
+   GAME LOOP
+========================= */
+
+let last=performance.now();
+
+function loop(now){
+
+  let dt=Math.min(
+    (now-last)/1000,
+    .025
+  );
+
+  last=now;
+
+  updateBlocks(dt);
+  updatePigs(dt);
+  updateRobos(dt);
+  updateParticles(dt);
+
+
+  if(
+    !gameWon &&
+    pigs.length &&
+    pigs.every(p=>!p.alive)
+  ){
+
+    gameWon=true;
+
+    document.getElementById("msg").innerHTML=
+      "TARGETS CLEARED<br><small>Score: "+
+      score+
+      "</small>";
+
+    document.getElementById("msg").style.display=
+      "block";
+  }
+
+
+  draw();
+
+  requestAnimationFrame(loop);
+}
+
+
+/* =========================
+   CONTROLS
+========================= */
+
+document.getElementById("reset").onclick=
+  resetGame;
+
+document.addEventListener("keydown",e=>{
+
+  if(e.key==="r" || e.key==="R")
+    resetGame();
+});
+
+
+/* =========================
+   START
+========================= */
+
+resetGame();
+
+requestAnimationFrame(loop);
+
+</script>
+</body>
+</html>
