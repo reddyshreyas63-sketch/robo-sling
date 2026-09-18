@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robo Sling</title>
 <style>
 *{box-sizing:border-box;user-select:none}
@@ -17,10 +18,248 @@ canvas{display:block;width:100vw;height:100vh}
 #power{position:absolute;left:25px;bottom:67px;width:230px;display:none;color:white;font-size:12px;font-weight:bold}
 #bar{height:14px;background:rgba(0,0,0,.5);border-radius:9px;overflow:hidden;margin-top:5px}
 #fill{height:100%;width:0%;background:#ffd166}
-button{position:absolute;right:25px;bottom:20px;border:0;background:#111827;color:white;padding:13px 21px;border-radius:11px;font-weight:800;cursor:pointer}
-#serialBtn{position:absolute;right:25px;bottom:68px;background:#183b56}
-#status{position:absolute;right:25px;bottom:112px;color:white;background:rgba(15,35,55,.9);padding:7px 12px;border-radius:9px;font-size:12px}
+button{position:fixed;right:25px;bottom:20px;border:0;background:#111827;color:white;padding:13px 21px;border-radius:11px;font-weight:800;cursor:pointer;z-index:10}
+#serialBtn{position:fixed;right:25px;bottom:82px;background:#183b56;z-index:10}
+#status{position:fixed;right:25px;bottom:140px;color:white;background:rgba(15,35,55,.9);padding:7px 12px;border-radius:9px;font-size:12px;z-index:10}
 #msg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:none;background:rgba(10,20,30,.95);color:white;padding:25px 40px;border-radius:18px;font-size:28px;font-weight:900;text-align:center}
+
+/* ===== LEVEL SELECTOR ===== */
+#levelButtons{
+  position:fixed;
+  right:25px;
+  bottom:190px;
+  display:flex;
+  gap:8px;
+  z-index:10;
+}
+#levelButtons button{
+  position:static;
+  margin:0;
+  padding:10px 14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(15,35,55,.92);
+  color:white;
+  border-radius:10px;
+  font-weight:800;
+}
+#levelButtons button.active{
+  box-shadow:0 0 0 2px rgba(255,255,255,.22), 0 0 18px rgba(255,255,255,.18);
+}
+
+body {
+    margin: 0;
+    background:
+        radial-gradient(circle at 20% 15%, rgba(214, 150, 65, 0.14), transparent 28%),
+        linear-gradient(135deg, #17120d 0%, #2a1b10 48%, #100e0b 100%);
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+#hud {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+canvas {
+    background:
+        linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(48, 31, 18, 0.95) 70%),
+        radial-gradient(circle at 75% 20%, rgba(255, 194, 92, 0.18), transparent 22%),
+        linear-gradient(180deg, #24170f 0%, #5b351d 58%, #17100b 100%);
+    border: 3px solid white;
+    border-radius: 10px;
+    width: 95%;
+    max-width: 1000px;
+    height: auto;
+    cursor: crosshair;
+}
+
+button {
+    margin-top: 12px;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#message {
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   ROBO SLING — LEVEL THEMES
+   Add class="level-1" or class="level-2" to <body>.
+   ========================================================= */
+
+/* LEVEL 1 — CUTE / CARTOON */
+body.level-1{
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255,244,184,.65), transparent 22%),
+    radial-gradient(circle at 78% 22%, rgba(255,185,214,.40), transparent 26%),
+    linear-gradient(180deg,#9fdcff 0%,#dff6ff 58%,#b8e88c 100%);
+}
+
+body.level-1 h1{
+  letter-spacing:3px;
+  text-transform:uppercase;
+  text-shadow:0 3px 0 rgba(255,255,255,.75),0 0 14px rgba(255,170,210,.45);
+}
+
+body.level-1 canvas{
+  background:
+    radial-gradient(circle at 78% 18%, rgba(255,247,189,.72), transparent 18%),
+    linear-gradient(180deg,#8fd7ff 0%,#d9f5ff 58%,#86c96f 58%,#69aa52 100%);
+  border-color:#ffffff;
+  box-shadow:
+    inset 0 0 35px rgba(255,255,255,.22),
+    0 0 22px rgba(255,166,205,.24);
+}
+
+body.level-1 button{
+  border-color:rgba(255,255,255,.55);
+  background:#24415d;
+  color:#fff;
+  border-radius:14px;
+}
+
+body.level-1 #levelButtons button{
+  border-color:rgba(255,255,255,.7);
+  background:#335b7b;
+  color:#fff6fb;
+}
+
+body.level-1 #levelButtons button.active{
+  background:#ff8fbc;
+  border-color:#fff;
+  box-shadow:0 0 0 2px rgba(255,255,255,.55),0 0 18px rgba(255,143,188,.38);
+}
+
+/* LEVEL 2 — FUTURISTIC */
+body.level-2 {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(45, 220, 255, .16), transparent 25%),
+        radial-gradient(circle at 85% 75%, rgba(112, 78, 255, .18), transparent 30%),
+        linear-gradient(135deg, #030712 0%, #08152b 50%, #02030a 100%);
+}
+
+body.level-2 h1 {
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow:
+        0 0 8px rgba(70, 220, 255, .75),
+        0 0 20px rgba(76, 91, 255, .35);
+}
+
+body.level-2 canvas {
+    background:
+        linear-gradient(rgba(6, 20, 39, .35), rgba(2, 6, 18, .55)),
+        radial-gradient(circle at 70% 22%, rgba(53, 214, 255, .16), transparent 22%),
+        repeating-linear-gradient(90deg, rgba(58, 180, 255, .055) 0 1px, transparent 1px 70px),
+        repeating-linear-gradient(0deg, rgba(58, 180, 255, .045) 0 1px, transparent 1px 70px),
+        linear-gradient(180deg, #07172b 0%, #0a2540 62%, #020713 62%, #040817 100%);
+    border-color: #42dfff;
+    box-shadow:
+        inset 0 0 55px rgba(0, 0, 0, .58),
+        0 0 25px rgba(42, 216, 255, .22);
+}
+
+/* Optional level-specific controls */
+body.level-2 button {
+    border: 1px solid rgba(66, 223, 255, .65);
+    background: #071326;
+    color: #d9f8ff;
+}
+
+body.level-2 #message {
+    text-shadow: 0 0 8px rgba(66, 223, 255, .6);
+}
+
+
+/* ===== FULL SCREEN GAME ===== */
+html, body {
+  width:100%;
+  height:100%;
+  min-width:100%;
+  min-height:100%;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+}
+
+canvas#game {
+  display:block;
+  width:100vw;
+  height:100vh;
+  max-width:none;
+  max-height:none;
+  margin:0;
+  padding:0;
+  border-radius:0;
+}
+
+
+body.level-2 #levelButtons button{
+  border-color:rgba(66,223,255,.65);
+  background:rgba(7,19,38,.94);
+  color:#d9f8ff;
+  text-shadow:0 0 7px rgba(66,223,255,.45);
+}
+body.level-1 #levelButtons button{
+  border-color:rgba(197,138,72,.65);
+  background:rgba(38,22,10,.94);
+  color:#ffe2b5;
+}
+
+
+/* ===== FINAL FULL-SCREEN OVERRIDE ===== */
+html, body {
+  width:100vw !important;
+  height:100vh !important;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+canvas#game {
+  display:block !important;
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:none !important;
+  border-radius:0 !important;
+  z-index:0 !important;
+}
+
+
+@media (max-width: 800px){
+  #levelButtons{right:12px;bottom:185px}
+  #serialBtn{right:12px;bottom:78px}
+  #status{right:12px;bottom:137px}
+  button{right:12px;bottom:18px}
+  #help{left:12px;bottom:18px;font-size:12px}
+  .ui{top:12px;left:12px;right:12px}
+}
+
 </style>
 </head>
 <body>
@@ -45,6 +284,10 @@ button{position:absolute;right:25px;bottom:20px;border:0;background:#111827;colo
 </div>
 
 <div id="help">MOUSE: DRAG SLINGSHOT POUCH → RELEASE<br>KEYBOARD SIMULATION: W/S AIM · A/D POWER · SPACE FIRE</div>
+<div id="levelButtons">
+  <button id="level1Btn">LEVEL 1</button>
+  <button id="level2Btn">LEVEL 2</button>
+</div>
 <button id="serialBtn">CONNECT CONTROLLER</button>
 <button id="reset">RESET</button>
 <div id="status">CONTROL: MOUSE</div>
@@ -66,12 +309,15 @@ const POWER_MULT=7.0;
 const MAX_PULL=155;
 const PIG_BOUNCE=0.06;
 
-const SLING={x:150,y:440};
+const SLING={x:185,y:400};
 
 let score=0;
 let shots=0;
 let dragging=false;
 let gameWon=false;
+let structureActivated=false;
+let level=1;
+let levelShots=0;
 
 let currentRobo=null;
 let robos=[];
@@ -84,6 +330,13 @@ let serialPort=null;
 let serialReader=null;
 let serialConnected=false;
 let serialBuffer="";
+
+// Keyboard simulation state.
+// W/S = aim, A/D = power, SPACE = fire.
+let keyboardAim=0;
+let keyboardPower=0;
+let keyboardActive=false;
+
 let blocks=[];
 let pigs=[];
 let stars=[];
@@ -109,88 +362,191 @@ function newRobo(){
   };
 }
 
-function makeBlock(x,y,w,h){
+function makeBlock(x,y,w,h,booster=false){
   return {
     x,y,w,h,
+    spawnX:x,
+    spawnY:y,
     vx:0,
     vy:0,
     health:100,
     maxHealth:100,
     destroyed:false,
-    falling:false
+    falling:false,
+    awake:false,
+    booster:booster,
+    boosterPower:booster ? 1.02 : 0
   };
 }
 
 function makePig(x,y){
   return {
     x,y,
+    spawnX:x,
+    spawnY:y,
     radius:29,
     vx:0,
     vy:0,
     alive:true,
-    supported:true
+    supported:true,
+    crushCooldown:0,
+    spawnGrace:2.0,
+    lastDamageShot:-1
   };
 }
-
 
 /* =========================
    LEVEL
 ========================= */
 
 function createLevel(){
+  if(level===2){
+    createLevel2();
+    return;
+  }
 
+  // LEVEL 1 — STEAMPUNK / ORIGINAL STYLE
   blocks=[
-    makeBlock(990,555,340,35),
-
-    makeBlock(980,440,30,115),
-    makeBlock(1300,440,30,115),
-
-    makeBlock(1060,440,30,115),
-    makeBlock(1230,440,30,115),
-
-    makeBlock(1030,410,270,30),
-
-    makeBlock(1090,335,30,75),
-    makeBlock(1260,335,30,75),
-
-    makeBlock(1070,305,240,30),
-
-    makeBlock(1140,230,120,25)
+    makeBlock(850,555,560,35),
+    makeBlock(850,425,45,132),
+    makeBlock(1365,425,45,132),
+    makeBlock(890,395,520,32),
+    makeBlock(1000,255,45,142),
+    makeBlock(1255,255,45,142),
+    makeBlock(1040,225,260,32),
+    makeBlock(1090,150,45,77),
+    makeBlock(1165,150,45,77),
+    makeBlock(1120,120,60,32)
   ];
 
   pigs=[
-    makePig(1050,380),
-    makePig(1120,380),
-    makePig(1280,380),
-    makePig(1200,270),
-    makePig(1200,515)
+    makePig(945,526),
+    makePig(1120,526),
+    makePig(1295,526),
+    makePig(1070,366),
+    makePig(1230,366)
   ];
 
+  // Level 1 enemies need two successful shots.
+  for(const p of pigs){
+    p.maxHealth=2;
+    p.health=2;
+  }
+
   stars=[
-    {x:470,y:270,r:17,taken:false,points:150},
-    {x:700,y:190,r:17,taken:false,points:150},
-    {x:900,y:250,r:17,taken:false,points:200},
-    {x:1370,y:220,r:17,taken:false,points:250}
+    {x:430,y:270,r:17,taken:false,points:150},
+    {x:680,y:190,r:17,taken:false,points:150},
+    {x:820,y:250,r:17,taken:false,points:200},
+    {x:1430,y:220,r:17,taken:false,points:250}
   ];
 
   rings=[
-    {x:560,y:400,r:40,taken:false,points:100},
-    {x:780,y:350,r:40,taken:false,points:100},
-    {x:930,y:150,r:40,taken:false,points:100}
+    {x:540,y:400,r:40,taken:false,points:100},
+    {x:760,y:350,r:40,taken:false,points:100},
+    {x:900,y:150,r:40,taken:false,points:100}
   ];
 }
 
+function createLevel2(){
+  // LEVEL 2 — FUTURISTIC / CYBER CITY
+  // Connected tower with selective jet-assisted platforms.
+  blocks=[
+    // Ground foundation
+    makeBlock(810,555,620,35),
+
+    // Lower supports — directly under the lower deck
+    makeBlock(850,420,50,135),
+    makeBlock(1340,420,50,135),
+
+    // Lower deck — JET BOOSTERS keep this platform suspended
+    makeBlock(900,385,440,35,true),
+
+    // Middle supports — directly on the lower deck
+    makeBlock(965,250,50,135),
+    makeBlock(1225,250,50,135),
+
+    // Middle deck — JET BOOSTERS
+    makeBlock(1015,215,210,35,true),
+
+    // Upper supports
+    makeBlock(1060,140,42,75),
+    makeBlock(1158,140,42,75),
+
+    // Upper deck — JET BOOSTERS
+    makeBlock(1102,105,56,35,true),
+
+    // Crown supports
+    makeBlock(1132,55,36,50),
+
+    // Crown cap
+    makeBlock(1118,25,64,30,true)
+  ];
+
+  // Reinforced Level 2 structure: each block is tougher than Level 1.
+  for(const b of blocks){
+    b.health=160;
+    b.maxHealth=160;
+  }
+
+  // Ten enemies. Their spawn coordinates match the actual top surfaces
+  // of the platforms, so they do not start inside or above a gap.
+  pigs=[
+    makePig(930,526),
+    makePig(1060,526),
+    makePig(1190,526),
+    makePig(1310,526),
+
+    makePig(1035,356),
+    makePig(1160,356),
+    makePig(1285,356),
+
+    makePig(1085,186),
+    makePig(1190,186),
+
+    makePig(1130,76)
+  ];
+
+  // Level 2 enemies are armored.
+  for(const p of pigs){
+    p.maxHealth=2;
+    p.health=2;
+  }
+
+  stars=[
+    {x:420,y:240,r:17,taken:false,points:200},
+    {x:650,y:145,r:17,taken:false,points:250},
+    {x:820,y:300,r:17,taken:false,points:250},
+    {x:1420,y:175,r:17,taken:false,points:350},
+    {x:1150,y:20,r:17,taken:false,points:400}
+  ];
+
+  rings=[
+    {x:520,y:380,r:40,taken:false,points:150},
+    {x:780,y:275,r:40,taken:false,points:175},
+    {x:900,y:120,r:40,taken:false,points:200},
+    {x:1320,y:115,r:40,taken:false,points:225}
+  ];
+}
 
 /* =========================
    RESET / UI
 ========================= */
 
 function resetGame(){
+  level=1;
+  levelShots=0;
+  structureActivated=false;
 
   score=0;
   shots=0;
   dragging=false;
   gameWon=false;
+
+  keyboardAim=0;
+  keyboardPower=0;
+  keyboardActive=false;
+  hardwareAim=0;
+  hardwarePower=0;
 
   robos=[];
   particles=[];
@@ -213,6 +569,21 @@ function updateUI(){
 
   document.getElementById("targets").textContent=
     pigs.filter(p=>p.alive).length;
+
+  const title=document.querySelector(".title");
+  const sub=document.querySelector(".sub");
+  const l1=document.getElementById("level1Btn");
+  const l2=document.getElementById("level2Btn");
+
+  if(title) title.textContent = level===2 ? "ROBO SLING // LEVEL 2" : "ROBO SLING";
+  if(sub) sub.textContent = level===2
+    ? "FUTURE CITY // JET-BOOSTED PHYSICS CHALLENGE"
+    : "CUTE CITY // TWO-HIT TARGET CHALLENGE";
+
+  document.body.classList.toggle("level-1",level===1);
+  document.body.classList.toggle("level-2",level===2);
+  if(l1) l1.classList.toggle("active",level===1);
+  if(l2) l2.classList.toggle("active",level===2);
 }
 
 
@@ -227,6 +598,14 @@ function setControlMode(mode){
 
 function updateControllerStatus(){
   const status=document.getElementById("status");
+
+  if(controlMode==="keyboard"){
+    const p=Math.round(keyboardPower*100);
+    const a=Math.round(keyboardAim*100);
+    status.textContent=`CONTROL: KEYBOARD  |  POWER ${p}%  |  AIM ${a}`;
+    return;
+  }
+
   if(controlMode!=="serial"){
     status.textContent="CONTROL: MOUSE";
     return;
@@ -237,18 +616,18 @@ function updateControllerStatus(){
   status.textContent=`CONTROL: CONTROLLER  |  POWER ${p}%  |  AIM ${a}`;
 }
 
-function updateHardwarePouch(){
+function setPouchFromControls(power,aim){
   if(!currentRobo || !currentRobo.ready) return;
 
-  const power=Math.max(0,Math.min(1,hardwarePower));
-  const aim=Math.max(-1,Math.min(1,hardwareAim));
+  power=Math.max(0,Math.min(1,power));
+  aim=Math.max(-1,Math.min(1,aim));
 
-  // Keep the ORIGINAL slingshot geometry: power is pull distance,
-  // aim is vertical position. This keeps the existing physics intact.
+  // Power is the TOTAL pull distance. Aim changes the launch angle
+  // without accidentally increasing the total launch power.
   const pull=power*MAX_PULL;
-  const maxAimOffset=MAX_PULL*0.55;
-  const dx=-Math.max(25, pull);
-  const dy=aim*maxAimOffset;
+  const angle=aim*0.55;
+  const dx=-pull/Math.sqrt(1+angle*angle);
+  const dy=-dx*angle;
 
   pouch.x=SLING.x+dx;
   pouch.y=SLING.y+dy;
@@ -257,6 +636,14 @@ function updateHardwarePouch(){
   currentRobo.y=pouch.y;
 
   document.getElementById("fill").style.width=(power*100)+"%";
+}
+
+function updateHardwarePouch(){
+  setPouchFromControls(hardwarePower,hardwareAim);
+}
+
+function updateKeyboardPouch(){
+  setPouchFromControls(keyboardPower,keyboardAim);
 }
 
 function handleSerialLine(line){
@@ -322,6 +709,16 @@ async function readSerial(){
   }finally{
     try{serialReader.releaseLock();}catch(e){}
     serialReader=null;
+
+    // If the browser/USB device drops the stream, do not leave the UI
+    // stuck in "connected" mode.
+    if(serialConnected){
+      serialConnected=false;
+      serialPort=null;
+      controlMode="mouse";
+      document.getElementById("serialBtn").textContent="CONNECT CONTROLLER";
+      updateControllerStatus();
+    }
   }
 }
 
@@ -384,8 +781,12 @@ function pos(e){
 
 canvas.addEventListener("pointerdown",e=>{
 
-  if(!currentRobo || !currentRobo.ready || gameWon)
+  if(controlMode==="serial" || !currentRobo || !currentRobo.ready || gameWon)
     return;
+
+  controlMode="mouse";
+  keyboardActive=false;
+  updateControllerStatus();
 
   const p=pos(e);
 
@@ -410,32 +811,30 @@ canvas.addEventListener("pointermove",e=>{
 
   const p=pos(e);
 
-  let dx=p.x-SLING.x;
+  // A slingshot can only be pulled away from the fork.
+  // Do not force a 25px minimum pull: that used to make "0 power"
+  // launch with non-zero velocity.
+  let dx=Math.min(p.x-SLING.x,0);
   let dy=p.y-SLING.y;
 
   let d=Math.hypot(dx,dy);
 
   if(d>MAX_PULL){
-
     dx=dx/d*MAX_PULL;
     dy=dy/d*MAX_PULL;
-
     d=MAX_PULL;
   }
-
-  if(dx>-25)
-    dx=-25;
 
   currentRobo.x=SLING.x+dx;
   currentRobo.y=SLING.y+dy;
 
+  // Display the actual pull distance, not the pre-clamp mouse distance.
   document.getElementById("fill").style.width=
-    (d/MAX_PULL*100)+"%";
+    Math.round(d/MAX_PULL*100)+"%";
 });
 
 
-canvas.addEventListener("pointerup",()=>{
-
+function releaseMouseShot(){
   if(!dragging)
     return;
 
@@ -445,7 +844,10 @@ canvas.addEventListener("pointerup",()=>{
 
   if(currentRobo && currentRobo.ready)
     fireRobo();
-});
+}
+
+canvas.addEventListener("pointerup",releaseMouseShot);
+canvas.addEventListener("pointercancel",releaseMouseShot);
 
 
 /* =========================
@@ -459,20 +861,34 @@ function fireRobo(){
   const dx=SLING.x-r.x;
   const dy=SLING.y-r.y;
 
-  const pull=Math.hypot(dx,dy);
+  const pull=Math.min(MAX_PULL,Math.hypot(dx,dy));
+
+  // Prevent accidental zero-power shots from consuming a shot.
+  if(pull<8){
+    r.x=SLING.x;
+    r.y=SLING.y;
+    return;
+  }
 
   const damage=Math.max(
     0,
     Math.min(100,pull/MAX_PULL*100)
   );
 
+  const level2Boost = level===2;
+
   const fired={
 
     x:r.x,
     y:r.y,
 
-    vx:dx*POWER_MULT,
-    vy:dy*POWER_MULT,
+    // Level 2 uses twin jet boosters for a faster launch.
+    vx:dx*POWER_MULT*(level2Boost ? 1.35 : 1),
+    vy:dy*POWER_MULT*(level2Boost ? 1.35 : 1),
+
+    // Jet fuel/thrust only exists in Level 2.
+    jetFuel: level2Boost ? 1.15 : 0,
+    jetThrust: level2Boost ? 620 : 0,
 
     radius:r.radius,
 
@@ -505,6 +921,7 @@ function fireRobo(){
   currentRobo=null;
 
   shots++;
+  levelShots++;
 
   updateUI();
 
@@ -514,7 +931,14 @@ function fireRobo(){
 
     if(!gameWon && !currentRobo){
       currentRobo=newRobo();
-      if(controlMode==="serial") updateHardwarePouch();
+
+      if(controlMode==="serial"){
+        updateHardwarePouch();
+      }else if(keyboardActive || controlMode==="keyboard"){
+        controlMode="keyboard";
+        updateKeyboardPouch();
+        updateControllerStatus();
+      }
     }
 
   },2000);
@@ -531,6 +955,31 @@ function updateRobos(dt){
 
     if(!r.active)
       continue;
+
+    /*
+      LEVEL 2 JET BOOST:
+      Two rear thrusters accelerate the Robo in its current flight direction
+      for a limited burst. This adds real velocity instead of only changing
+      the sprite.
+    */
+    if(level===2 && (r.jetFuel||0)>0){
+
+      const speed=Math.hypot(r.vx,r.vy);
+
+      if(speed>10){
+        const nx=r.vx/speed;
+        const ny=r.vy/speed;
+
+        const thrust=Math.min(r.jetFuel,dt)*r.jetThrust;
+
+        r.vx+=nx*thrust;
+        r.vy+=ny*thrust;
+
+        r.jetFuel=Math.max(0,r.jetFuel-dt);
+      }else{
+        r.jetFuel=Math.max(0,r.jetFuel-dt);
+      }
+    }
 
     r.vy+=G*dt;
 
@@ -611,7 +1060,7 @@ function robotPigCollisions(r){
 
   for(const p of pigs){
 
-    if(!p.alive || r.hitPigs.has(p))
+    if(!p.alive || p.spawnGrace>0 || r.hitPigs.has(p))
       continue;
 
     const dx=p.x-r.x;
@@ -648,15 +1097,31 @@ function killPig(p){
   if(!p.alive)
     return;
 
-  p.alive=false;
+  // Each enemy can take damage only once from a single fired Robo.
+  // This prevents a direct hit + chain reaction in the same shot from
+  // instantly consuming the entire Level 1 health pool.
+  if(p.lastDamageShot===levelShots)
+    return;
 
+  p.lastDamageShot=levelShots;
+
+  if((p.health ?? 1)>1){
+    p.health--;
+    p.vx*=0.35;
+    p.vy=-80;
+    score+=40;
+    updateUI();
+    burst(p.x,p.y,14);
+    return;
+  }
+
+  p.alive=false;
   p.vx=0;
   p.vy=0;
 
   score+=100;
 
   updateUI();
-
   burst(p.x,p.y,28);
 }
 
@@ -672,70 +1137,64 @@ function robotBlockCollisions(r){
     if(b.destroyed || r.hitBlocks.has(b))
       continue;
 
-    const cx=Math.max(
-      b.x,
-      Math.min(r.x,b.x+b.w)
-    );
+    const closestX=Math.max(b.x, Math.min(r.x, b.x+b.w));
+    const closestY=Math.max(b.y, Math.min(r.y, b.y+b.h));
 
-    const cy=Math.max(
-      b.y,
-      Math.min(r.y,b.y+b.h)
-    );
+    let nx=r.x-closestX;
+    let ny=r.y-closestY;
+    let dist=Math.hypot(nx,ny);
 
-    const dx=r.x-cx;
-    const dy=r.y-cy;
-
-    if(dx*dx+dy*dy>r.radius*r.radius)
+    if(dist>r.radius)
       continue;
+
+    // Resolve the collision before reflecting velocity so the Robo
+    // cannot remain embedded in the block and lose its bounce.
+    if(dist<0.0001){
+      const left=Math.abs(r.x-b.x);
+      const right=Math.abs((b.x+b.w)-r.x);
+      const top=Math.abs(r.y-b.y);
+      const bottom=Math.abs((b.y+b.h)-r.y);
+      const m=Math.min(left,right,top,bottom);
+
+      if(m===left){ nx=-1; ny=0; }
+      else if(m===right){ nx=1; ny=0; }
+      else if(m===top){ nx=0; ny=-1; }
+      else { nx=0; ny=1; }
+
+      dist=0;
+    }else{
+      nx/=dist;
+      ny/=dist;
+    }
 
     r.hitBlocks.add(b);
 
-
-    /*
-      CRITICAL RULE
-
-      If this Robo has EVER bounced:
-
-          NO DAMAGE.
-
-      It can only push the block.
-
-      This includes:
-        - ground bounce
-        - previous block bounce
-        - any previous bounce event
-
-      bounced is never reset.
-    */
-
-    if(r.bounced === true){
-
+    // First-shot impact damages the block; later impacts still push it.
+    if(r.bounced===true){
       pushBlock(b,r,.35);
-
     }else{
-
       damageBlock(b,r.damage,r);
     }
 
+    // Push the Robo completely out of the block.
+    const penetration=Math.max(0,r.radius-dist)+1.5;
+    r.x+=nx*penetration;
+    r.y+=ny*penetration;
 
-    /*
-      Physical collision response.
-
-      This does NOT change r.bounced.
-      Once true, it stays true.
-    */
-
-    if(Math.abs(dx)>Math.abs(dy)){
-
-      r.vx*=-.72;
-
-    }else{
-
-      r.vy*=-.72;
+    // Proper elastic-ish reflection against the impact normal.
+    // This makes Level 1 blocks produce a visible, controllable bounce.
+    const vn=r.vx*nx+r.vy*ny;
+    if(vn<0){
+      const restitution = level===1 ? 0.84 : 0.78;
+      r.vx -= (1+restitution)*vn*nx;
+      r.vy -= (1+restitution)*vn*ny;
     }
+
+    // Preserve some energy while preventing numerical jitter.
+    r.vx*=0.985;
+    r.vy*=0.985;
   }
 }
-
 
 /* =========================
    BLOCK PUSHING
@@ -753,8 +1212,21 @@ function pushBlock(b,r,factor){
 
   const speed=Math.hypot(r.vx,r.vy);
 
+  // A real Robo hit wakes the block and activates the structure physics.
+  // Until the player actually hits something, the starting tower cannot
+  // collapse and cannot crush an enemy.
+  structureActivated=true;
+  b.awake=true;
   b.vx+=dx/d*speed*factor;
   b.vy+=dy/d*speed*factor;
+
+  // A direct hit explicitly activates physics on this block.
+  // Booster blocks remain stabilized vertically but can still be pushed.
+  if(b.booster){
+    b.falling=false;
+  }else{
+    b.falling=true;
+  }
 }
 
 
@@ -832,9 +1304,11 @@ function blockSupported(b){
     if(o===b || o.destroyed)
       continue;
 
+    // Edge-to-edge contact counts as connected support.
+    // Level pieces are designed to meet exactly at their edges.
     const horizontal=
-      b.x<o.x+o.w &&
-      b.x+b.w>o.x;
+      b.x<=o.x+o.w+0.01 &&
+      b.x+b.w>=o.x-0.01;
 
     const vertical=
       Math.abs(b.y+b.h-o.y)<7;
@@ -854,32 +1328,70 @@ function updateBlocks(dt){
     if(b.destroyed)
       continue;
 
-    const supported=blockSupported(b);
-
-
-    if(!supported || Math.abs(b.vy)>8){
-
-      b.falling=true;
-      b.vy+=G*dt;
-
-    }else{
-
+    /*
+      BEFORE THE FIRST PLAYER HIT:
+      Preserve the level blueprint exactly.
+    */
+    if(!structureActivated && !b.awake){
+      b.x=b.spawnX;
+      b.y=b.spawnY;
+      b.vx=0;
       b.vy=0;
+      b.falling=false;
+      continue;
     }
 
+    const supported=blockSupported(b);
+
+    /*
+      A block that loses its support becomes dynamic.
+      Booster blocks are the exception: their jets can hold them up.
+    */
+    if(!b.awake && !supported && !b.booster){
+      b.awake=true;
+      b.falling=true;
+    }
+
+    if(b.awake){
+
+      if(b.booster){
+        /*
+          Jet-assisted stabilization:
+          when unsupported, the booster cancels gravity instead of letting
+          the block fall. Existing velocity from a real impact remains,
+          so boosters do not disable horizontal physics.
+        */
+        if(!supported){
+          b.vy+=G*b.boosterPower*dt;
+          b.vy-=G*dt;
+          b.vy*=Math.pow(.92,dt*60);
+        }else{
+          // On a support, damp vertical jitter while retaining horizontal motion.
+          b.vy*=Math.pow(.72,dt*60);
+        }
+
+        b.falling=false;
+      }else if(!supported || b.falling || Math.abs(b.vy)>8){
+        b.falling=true;
+        b.vy+=G*dt;
+      }else{
+        b.vy=0;
+        b.falling=false;
+      }
+
+    }else{
+      b.vx=0;
+      b.vy=0;
+      b.falling=false;
+    }
 
     b.x+=b.vx*dt;
     b.y+=b.vy*dt;
 
     b.vx*=Math.pow(.985,dt*60);
 
-
-    /*
-      Ground collision
-    */
-
+    // Ground collision.
     if(b.y+b.h>=GROUND){
-
       b.y=GROUND-b.h;
 
       if(Math.abs(b.vy)>35)
@@ -890,95 +1402,84 @@ function updateBlocks(dt){
       b.vx*=.82;
     }
 
-
     if(b.x<0){
-
       b.x=0;
       b.vx*=-.2;
     }
 
     if(b.x+b.w>W){
-
       b.x=W-b.w;
       b.vx*=-.2;
     }
   }
 
-
   /*
-    Basic block-to-block collision
+    Block-to-block physics.
+    A moving/awake block transfers motion to a block it hits and wakes it.
+    This stops the tower from behaving like a collection of frozen sprites.
   */
-
   for(let i=0;i<blocks.length;i++){
 
     const a=blocks[i];
-
-    if(a.destroyed)
-      continue;
+    if(a.destroyed) continue;
 
     for(let j=i+1;j<blocks.length;j++){
 
       const b=blocks[j];
+      if(b.destroyed) continue;
 
-      if(b.destroyed)
-        continue;
-
-      const ox=Math.min(
-        a.x+a.w,
-        b.x+b.w
-      )-Math.max(a.x,b.x);
-
-      const oy=Math.min(
-        a.y+a.h,
-        b.y+b.h
-      )-Math.max(a.y,b.y);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
 
       if(ox<=0 || oy<=0)
         continue;
 
+      const relativeSpeed=Math.hypot(a.vx-b.vx,a.vy-b.vy);
+      const dynamicContact=a.awake || b.awake || relativeSpeed>8;
+
+      // If an active block physically contacts a resting block, wake the resting block.
+      if(dynamicContact){
+        if(!a.awake) a.awake=true;
+        if(!b.awake) b.awake=true;
+      }
 
       if(oy<ox){
 
         if(a.y<b.y){
-
           a.y-=oy/2;
           b.y+=oy/2;
-
         }else{
-
           a.y+=oy/2;
           b.y-=oy/2;
         }
 
         const av=a.vy;
         const bv=b.vy;
-
-        a.vy=bv*.15;
-        b.vy=av*.15;
+        a.vy=bv*.18;
+        b.vy=av*.18;
 
       }else{
 
         if(a.x<b.x){
-
           a.x-=ox/2;
           b.x+=ox/2;
-
         }else{
-
           a.x+=ox/2;
           b.x-=ox/2;
         }
 
         const av=a.vx;
         const bv=b.vx;
-
-        a.vx=bv*.25;
-        b.vx=av*.25;
+        a.vx=bv*.32;
+        b.vx=av*.32;
       }
+
+      // Booster blocks retain their stabilization after collisions.
+      if(a.booster) a.falling=false;
+      if(b.booster) b.falling=false;
     }
   }
 }
-
 
 /* =========================
    PIG PHYSICS
@@ -991,43 +1492,51 @@ function updatePigs(dt){
     if(!p.alive)
       continue;
 
-    let supportY=null;
-
+    if(p.spawnGrace>0)
+      p.spawnGrace=Math.max(0,p.spawnGrace-dt);
 
     /*
-      Ground support
+      HARD SPAWN LOCK:
+      Before the player hits any block, enemies stay exactly at their
+      designed spawn positions. This prevents gravity/support jitter from
+      making them fall at the start of the level.
     */
+    if(!structureActivated){
+      p.x=p.spawnX;
+      p.y=p.spawnY;
+      p.vx=0;
+      p.vy=0;
+      p.supported=true;
+      continue;
+    }
 
+    let supportY=null;
+
+    // Ground support.
     if(p.y+p.radius>=GROUND-3)
       supportY=GROUND-p.radius;
 
-
-    /*
-      Block support
-    */
-
+    // Only a block's TOP surface supports a pig.
     for(const b of blocks){
 
       if(b.destroyed)
         continue;
 
-      if(
-        p.x>b.x-p.radius &&
-        p.x<b.x+b.w+p.radius &&
-        p.y<=b.y+5 &&
-        p.y+p.radius>=b.y-5
-      ){
+      const horizontal =
+        p.x > b.x-p.radius &&
+        p.x < b.x+b.w+p.radius;
 
-        if(
-          supportY===null ||
-          b.y-p.radius<supportY
-        ){
+      const standingOnTop =
+        p.y <= b.y+8 &&
+        p.y+p.radius >= b.y-8 &&
+        p.vy >= 0;
 
-          supportY=b.y-p.radius;
-        }
+      if(horizontal && standingOnTop){
+        const candidate=b.y-p.radius;
+        if(supportY===null || candidate<supportY)
+          supportY=candidate;
       }
     }
-
 
     if(supportY!==null && p.vy>=0){
 
@@ -1041,17 +1550,15 @@ function updatePigs(dt){
       p.vx*=.70;
 
     }else{
-
       p.vy+=G*dt;
     }
-
 
     p.x+=p.vx*dt;
     p.y+=p.vy*dt;
 
     p.vx*=Math.pow(.985,dt*60);
 
-
+    // Ground collision.
     if(p.y+p.radius>=GROUND){
 
       p.y=GROUND-p.radius;
@@ -1064,37 +1571,126 @@ function updatePigs(dt){
       p.vx*=.70;
     }
 
+    // Spawn protection: enemies cannot be killed by structure physics
+    // while the starting tower is still untouched.
+    if(p.spawnGrace>0 || !structureActivated)
+      continue;
 
-    /*
-      Falling block kills pig.
-    */
-
+    // IMPORTANT:
+    // Never kill a pig just because its static spawn position is close
+    // to two blocks. A crush requires an actively moving block.
     for(const b of blocks){
 
-      if(
-        b.destroyed ||
-        !b.falling ||
-        b.vy<40
-      )
+      if(b.destroyed || !b.awake)
         continue;
 
-      const cx=Math.max(
-        b.x,
-        Math.min(p.x,b.x+b.w)
-      );
-
-      const cy=Math.max(
-        b.y,
-        Math.min(p.y,b.y+b.h)
-      );
-
+      const cx=Math.max(b.x,Math.min(p.x,b.x+b.w));
+      const cy=Math.max(b.y,Math.min(p.y,b.y+b.h));
       const dx=p.x-cx;
       const dy=p.y-cy;
 
-      if(
-        dx*dx+dy*dy<=p.radius*p.radius
-      ){
+      if(dx*dx+dy*dy > p.radius*p.radius)
+        continue;
 
+      const blockSpeed=Math.hypot(b.vx,b.vy);
+
+      // Stationary blocks can NEVER crush an enemy.
+      if(blockSpeed < 90)
+        continue;
+
+      // Determine whether the block is moving into the pig.
+      const blockCenterX=b.x+b.w/2;
+      const blockCenterY=b.y+b.h/2;
+
+      const towardX =
+        Math.sign(p.x-blockCenterX) === Math.sign(b.vx) ||
+        Math.abs(b.vx)<10;
+
+      const towardY =
+        Math.sign(p.y-blockCenterY) === Math.sign(b.vy) ||
+        Math.abs(b.vy)<10;
+
+      if(towardX || towardY){
+        killPig(p);
+        break;
+      }
+    }
+  }
+}
+
+function isPigCrushed(p){
+  // Kept for compatibility with older code.
+  // Crushing is handled directly inside updatePigs().
+  return false;
+}
+
+
+
+/* =========================
+   PIG / PIG + CRUSH COLLISIONS
+========================= */
+
+/*
+  Enemies collide physically. A real impact kills BOTH pigs.
+  Low-speed numerical overlap is separated instead of causing
+  accidental deaths.
+*/
+function pigPigCollisions(){
+  for(let i=0;i<pigs.length;i++){
+    const a=pigs[i]; if(!a.alive || a.spawnGrace>0) continue;
+    for(let j=i+1;j<pigs.length;j++){
+      const b=pigs[j]; if(!b.alive || b.spawnGrace>0) continue;
+      const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy), minDist=a.radius+b.radius;
+      if(d>=minDist) continue;
+      const nx=dx/Math.max(d,.001), ny=dy/Math.max(d,.001);
+      const rvx=b.vx-a.vx, rvy=b.vy-a.vy;
+      const impact=Math.abs(rvx*nx+rvy*ny);
+      // Any meaningful impact between enemies destroys both.
+      if(impact>12 || Math.hypot(a.vx,a.vy)>35 || Math.hypot(b.vx,b.vy)>35){
+        const x=(a.x+b.x)/2, y=(a.y+b.y)/2;
+        killPig(a); killPig(b); burst(x,y,24); continue;
+      }
+      const correction=(minDist-d)/2;
+      a.x-=nx*correction; a.y-=ny*correction; b.x+=nx*correction; b.y+=ny*correction;
+    }
+  }
+}
+
+/*
+  Detects a pig being crushed/caught between blocks.
+
+  We require blocks on opposite sides (left/right or top/bottom),
+  or two moving blocks pressing into the pig. This avoids killing
+  a pig merely because it is standing on one block.
+*/
+function pigCrushCollisions(){
+  // No crush logic is active until the player has actually hit a block.
+  // This prevents all forms of spawn camping.
+  if(!structureActivated) return;
+
+  // A stationary starting structure can NEVER crush a pig.
+  // Crushing requires an awake block that is actually moving fast enough.
+  for(const p of pigs){
+    if(!p.alive) continue;
+
+    for(const b of blocks){
+      if(b.destroyed || !b.awake) continue;
+
+      const cx=Math.max(b.x,Math.min(p.x,b.x+b.w));
+      const cy=Math.max(b.y,Math.min(p.y,b.y+b.h));
+      const dx=p.x-cx, dy=p.y-cy;
+      if(dx*dx+dy*dy > p.radius*p.radius) continue;
+
+      const speed=Math.hypot(b.vx,b.vy);
+      if(speed < 120) continue;
+
+      // Only count motion toward the pig, along the collision direction.
+      const dist=Math.hypot(dx,dy);
+      if(dist < 0.001) continue;
+      const nx=dx/dist, ny=dy/dist;
+      const closing=b.vx*nx+b.vy*ny;
+
+      if(closing > 80){
         killPig(p);
         break;
       }
@@ -1207,90 +1803,92 @@ function updateParticles(dt){
 
 function drawBackground(){
 
-  const g=ctx.createLinearGradient(
-    0,0,0,H
-  );
+  if(level===2){
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,"#020611");
+    g.addColorStop(.52,"#071a35");
+    g.addColorStop(1,"#02040b");
+    ctx.fillStyle=g;
+    ctx.fillRect(0,0,W,H);
 
-  g.addColorStop(0,"#51b8e8");
-  g.addColorStop(1,"#d5f1ff");
+    ctx.fillStyle="rgba(40,205,255,.10)";
+    ctx.beginPath();
+    ctx.arc(1180,125,120,0,Math.PI*2);
+    ctx.fill();
 
+    ctx.strokeStyle="rgba(55,210,255,.14)";
+    ctx.lineWidth=1;
+    for(let x=0;x<=W;x+=75){
+      ctx.beginPath(); ctx.moveTo(x,GROUND); ctx.lineTo(x-80,220); ctx.stroke();
+    }
+    for(let y=250;y<GROUND;y+=55){
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
+
+    ctx.fillStyle="#061225";
+    for(let x=20;x<W;x+=100){
+      const h=70+((x*13)%130);
+      ctx.fillRect(x,GROUND-h,65,h);
+      ctx.fillStyle="rgba(55,220,255,.22)";
+      for(let yy=GROUND-h+18;yy<GROUND-12;yy+=24)
+        ctx.fillRect(x+13,yy,8,3);
+      ctx.fillStyle="#061225";
+    }
+
+    ctx.fillStyle="#07192b";
+    ctx.fillRect(0,GROUND,W,H-GROUND);
+    ctx.fillStyle="#17455a";
+    ctx.fillRect(0,GROUND,W,8);
+    return;
+  }
+
+  // LEVEL 1 — CUTE CARTOON SKY
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#8fd5ff");
+  g.addColorStop(.58,"#e6f8ff");
+  g.addColorStop(1,"#b6e88f");
   ctx.fillStyle=g;
   ctx.fillRect(0,0,W,H);
 
-
-  ctx.fillStyle="#ffd166";
-
+  // Puffy sun
+  ctx.fillStyle="#ffe58a";
+  ctx.shadowColor="#fff2af";
+  ctx.shadowBlur=20;
   ctx.beginPath();
-  ctx.arc(1160,110,55,0,Math.PI*2);
+  ctx.arc(1180,105,52,0,Math.PI*2);
   ctx.fill();
+  ctx.shadowBlur=0;
 
-
-  ctx.fillStyle="#8eb5a1";
-
+  // Distant rounded hills
+  ctx.fillStyle="#a8d98a";
   ctx.beginPath();
-
-  ctx.moveTo(0,480);
-  ctx.lineTo(170,300);
-  ctx.lineTo(330,470);
-  ctx.lineTo(500,270);
-  ctx.lineTo(680,470);
-  ctx.lineTo(870,300);
-  ctx.lineTo(1050,470);
-  ctx.lineTo(1230,320);
-  ctx.lineTo(1500,470);
-
+  ctx.moveTo(0,475);
+  ctx.quadraticCurveTo(170,330,360,470);
+  ctx.quadraticCurveTo(520,340,720,470);
+  ctx.quadraticCurveTo(900,335,1080,470);
+  ctx.quadraticCurveTo(1260,350,1500,465);
   ctx.lineTo(1500,GROUND);
   ctx.lineTo(0,GROUND);
-
   ctx.closePath();
   ctx.fill();
 
-
-  ctx.fillStyle="#6d9d72";
-
+  ctx.fillStyle="#82c96b";
   ctx.beginPath();
-
-  ctx.moveTo(0,500);
-
-  ctx.quadraticCurveTo(
-    250,400,
-    500,500
-  );
-
-  ctx.quadraticCurveTo(
-    750,390,
-    1000,500
-  );
-
-  ctx.quadraticCurveTo(
-    1250,400,
-    1500,490
-  );
-
+  ctx.moveTo(0,505);
+  ctx.quadraticCurveTo(260,415,520,505);
+  ctx.quadraticCurveTo(800,400,1070,505);
+  ctx.quadraticCurveTo(1290,420,1500,495);
   ctx.lineTo(1500,GROUND);
   ctx.lineTo(0,GROUND);
-
   ctx.closePath();
   ctx.fill();
 
-
-  ctx.fillStyle="#4d7d43";
-  ctx.fillRect(
-    0,
-    GROUND,
-    W,
-    H-GROUND
-  );
-
-  ctx.fillStyle="#70aa57";
-  ctx.fillRect(
-    0,
-    GROUND,
-    W,
-    10
-  );
+  // Soft grassy ground
+  ctx.fillStyle="#69ac55";
+  ctx.fillRect(0,GROUND,W,H-GROUND);
+  ctx.fillStyle="#8ed56a";
+  ctx.fillRect(0,GROUND,W,10);
 }
-
 
 function cloud(x,y,s){
 
@@ -1364,6 +1962,47 @@ function drawRobo(r){
 
   ctx.translate(r.x,r.y);
   ctx.rotate(r.rotation);
+
+  // Level 2: twin jet boosters mounted at the rear.
+  // They point opposite the current travel direction.
+  if(level===2 && (r.jetFuel||0)>0){
+
+    const flame=Math.max(
+      10,
+      22+Math.sin(performance.now()*.035+r.x*.01)*7
+    );
+
+    for(const bx of [-10,10]){
+      ctx.fillStyle="#102b3d";
+      ctx.strokeStyle="#55ecff";
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.roundRect(bx-5,18,10,10,3);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle="#6df3ff";
+      ctx.shadowColor="#42dfff";
+      ctx.shadowBlur=10;
+      ctx.beginPath();
+      ctx.moveTo(bx-4,27);
+      ctx.lineTo(bx+4,27);
+      ctx.lineTo(bx,27+flame);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle="#fff2a8";
+      ctx.shadowColor="#fff2a8";
+      ctx.shadowBlur=8;
+      ctx.beginPath();
+      ctx.moveTo(bx-2,27);
+      ctx.lineTo(bx+2,27);
+      ctx.lineTo(bx,27+flame*.55);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur=0;
+    }
+  }
 
   ctx.fillStyle="rgba(0,0,0,.18)";
 
@@ -1448,104 +2087,343 @@ function drawRobo(r){
 
 
 function drawPig(p){
+  if(!p.alive) return;
 
-  if(!p.alive)
+  // LEVEL 2 keeps the cyber enemy art.
+  if(level===2){
+    ctx.save();
+    ctx.translate(p.x,p.y);
+
+    const pulse=.5+.5*Math.sin(performance.now()*.006+p.x);
+
+    ctx.fillStyle="rgba(0,0,0,.25)";
+    ctx.beginPath();
+    ctx.ellipse(3,9,28,17,0,0,Math.PI*2);
+    ctx.fill();
+
+    const g=ctx.createRadialGradient(-9,-12,2,0,0,31);
+    g.addColorStop(0,"#e5fbff");
+    g.addColorStop(.32,"#63d4e7");
+    g.addColorStop(.68,"#1a6484");
+    g.addColorStop(1,"#071b31");
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(0,0,28,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="#42dfff";
+    ctx.lineWidth=2.5;
+    ctx.shadowColor="#42dfff";
+    ctx.shadowBlur=10;
+    ctx.stroke();
+    ctx.shadowBlur=0;
+
+    ctx.fillStyle="#123f59";
+    ctx.beginPath();
+    ctx.moveTo(-19,-19); ctx.lineTo(-29,-33); ctx.lineTo(-9,-25); ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(19,-19); ctx.lineTo(29,-33); ctx.lineTo(9,-25); ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle="#06111f";
+    ctx.strokeStyle="rgba(66,223,255,.8)";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.roundRect(-20,-12,40,18,7);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle=`rgba(70,235,255,${.72+.28*pulse})`;
+    ctx.shadowColor="#42dfff";
+    ctx.shadowBlur=12;
+    ctx.beginPath();
+    ctx.arc(-10,-3,4,0,Math.PI*2);
+    ctx.arc(10,-3,4,0,Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur=0;
+
+    ctx.strokeStyle="#081525";
+    ctx.lineWidth=4;
+    ctx.beginPath();
+    ctx.moveTo(-17,-13); ctx.lineTo(-5,-10);
+    ctx.moveTo(17,-13); ctx.lineTo(5,-10);
+    ctx.stroke();
+
+    ctx.fillStyle="#18384c";
+    ctx.strokeStyle="#59e8ff";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.roundRect(-14,9,28,14,6);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle="#06111f";
+    ctx.beginPath();
+    ctx.arc(-6,15,3,0,Math.PI*2);
+    ctx.arc(6,15,3,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="#8ff6ff";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(-9,25); ctx.lineTo(0,20); ctx.lineTo(9,25);
+    ctx.stroke();
+
+    ctx.strokeStyle="#4de9ff";
+    ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(0,-28); ctx.lineTo(0,-39); ctx.stroke();
+
+    ctx.fillStyle="#ff4d9d";
+    ctx.shadowColor="#ff4d9d";
+    ctx.shadowBlur=10;
+    ctx.beginPath(); ctx.arc(0,-41,4.5,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0;
+
+    ctx.restore();
     return;
+  }
 
+  // LEVEL 1 — CUTE PASTEL ENEMY
   ctx.save();
-
   ctx.translate(p.x,p.y);
 
-  const g=ctx.createRadialGradient(
-    -8,-10,2,
-    0,0,30
-  );
+  const bob=Math.sin(performance.now()*.004+p.x*.02)*1.5;
+  ctx.translate(0,bob);
 
-  g.addColorStop(0,"#b8ed76");
-  g.addColorStop(1,"#3e8d45");
+  // Soft shadow
+  ctx.fillStyle="rgba(48,73,94,.18)";
+  ctx.beginPath();
+  ctx.ellipse(3,10,27,16,0,0,Math.PI*2);
+  ctx.fill();
+
+  // Ears
+  const ear=ctx.createLinearGradient(0,-35,0,-12);
+  ear.addColorStop(0,"#ffb7cf");
+  ear.addColorStop(1,"#ff8eb9");
+  ctx.fillStyle=ear;
+
+  ctx.beginPath();
+  ctx.moveTo(-18,-18);
+  ctx.quadraticCurveTo(-30,-37,-12,-29);
+  ctx.quadraticCurveTo(-5,-25,-9,-17);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(18,-18);
+  ctx.quadraticCurveTo(30,-37,12,-29);
+  ctx.quadraticCurveTo(5,-25,9,-17);
+  ctx.closePath();
+  ctx.fill();
+
+  // Cute body
+  const g=ctx.createRadialGradient(-9,-12,2,0,0,31);
+  g.addColorStop(0,"#fff5fb");
+  g.addColorStop(.45,"#ffc4df");
+  g.addColorStop(.82,"#ff99c2");
+  g.addColorStop(1,"#ea6f9d");
 
   ctx.fillStyle=g;
-
   ctx.beginPath();
   ctx.arc(0,0,28,0,Math.PI*2);
   ctx.fill();
 
-  ctx.strokeStyle="#285a2d";
-  ctx.lineWidth=3;
+  ctx.strokeStyle="#d95f8f";
+  ctx.lineWidth=2.5;
   ctx.stroke();
 
-  ctx.fillStyle="#152019";
-
+  // Hair tuft
+  ctx.fillStyle="#ffd86e";
   ctx.beginPath();
+  ctx.moveTo(-7,-25);
+  ctx.quadraticCurveTo(0,-36,7,-25);
+  ctx.quadraticCurveTo(4,-20,0,-22);
+  ctx.quadraticCurveTo(-4,-20,-7,-25);
+  ctx.fill();
 
-  ctx.arc(-9,-4,4,0,Math.PI*2);
-  ctx.arc(9,-4,4,0,Math.PI*2);
-  ctx.arc(0,9,4,0,Math.PI*2);
+  // Big shiny eyes
+  ctx.fillStyle="#fff";
+  ctx.beginPath();
+  ctx.ellipse(-10,-6,9,11,0,0,Math.PI*2);
+  ctx.ellipse(10,-6,9,11,0,0,Math.PI*2);
+  ctx.fill();
 
+  ctx.fillStyle="#5a4059";
+  ctx.beginPath();
+  ctx.arc(-8,-4,4.5,0,Math.PI*2);
+  ctx.arc(8,-4,4.5,0,Math.PI*2);
+  ctx.fill();
+
+  // Eye highlights
+  ctx.fillStyle="#fff";
+  ctx.beginPath();
+  ctx.arc(-6.5,-6,1.5,0,Math.PI*2);
+  ctx.arc(9.5,-6,1.5,0,Math.PI*2);
+  ctx.fill();
+
+  // Tiny lashes / brows
+  ctx.strokeStyle="#914f75";
+  ctx.lineWidth=2.2;
+  ctx.beginPath();
+  ctx.moveTo(-18,-15); ctx.lineTo(-13,-17);
+  ctx.moveTo(18,-15); ctx.lineTo(13,-17);
+  ctx.stroke();
+
+  // Snout
+  ctx.fillStyle="#ff8fae";
+  ctx.beginPath();
+  ctx.ellipse(0,10,13,8,0,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#9d4f69";
+  ctx.beginPath();
+  ctx.ellipse(-5,10,2.7,2.2,0,0,Math.PI*2);
+  ctx.ellipse(5,10,2.7,2.2,0,0,Math.PI*2);
+  ctx.fill();
+
+  // Happy little smile
+  ctx.strokeStyle="#944765";
+  ctx.lineWidth=2.5;
+  ctx.beginPath();
+  ctx.arc(0,14,7,.15,Math.PI-.15);
+  ctx.stroke();
+
+  // Rosy cheeks
+  ctx.fillStyle="rgba(255,103,151,.45)";
+  ctx.beginPath();
+  ctx.ellipse(-19,10,6,3.5,0,0,Math.PI*2);
+  ctx.ellipse(19,10,6,3.5,0,0,Math.PI*2);
   ctx.fill();
 
   ctx.restore();
 }
 
-
 function drawBlock(b){
+  if(b.destroyed) return;
 
-  if(b.destroyed)
+  if(level===2){
+    // Futuristic alloy block
+    const g=ctx.createLinearGradient(b.x,b.y,b.x+b.w,b.y);
+    g.addColorStop(0,"#0b263c");
+    g.addColorStop(.48,"#1a5871");
+    g.addColorStop(1,"#071827");
+
+    ctx.fillStyle=g;
+    ctx.fillRect(b.x,b.y,b.w,b.h);
+
+    ctx.strokeStyle="#42dfff";
+    ctx.lineWidth=2.5;
+    ctx.shadowColor="#42dfff";
+    ctx.shadowBlur=8;
+    ctx.strokeRect(b.x,b.y,b.w,b.h);
+    ctx.shadowBlur=0;
+
+    if(b.w>70 || b.h>45){
+      ctx.strokeStyle="rgba(102,240,255,.3)";
+      ctx.lineWidth=1.5;
+      ctx.strokeRect(b.x+6,b.y+6,Math.max(1,b.w-12),Math.max(1,b.h-12));
+    }
+
+    ctx.strokeStyle="rgba(112,244,255,.42)";
+    ctx.lineWidth=1.5;
+    const cy=b.y+b.h/2;
+    ctx.beginPath();
+    ctx.moveTo(b.x+8,cy);
+    ctx.lineTo(b.x+20,cy);
+    ctx.lineTo(b.x+28,cy-5);
+    if(b.w>90){
+      ctx.lineTo(b.x+b.w-28,cy-5);
+      ctx.lineTo(b.x+b.w-20,cy);
+      ctx.lineTo(b.x+b.w-8,cy);
+    }else{
+      ctx.lineTo(b.x+b.w-8,cy);
+    }
+    ctx.stroke();
+
+    const nodes=b.w>90?3:2;
+    for(let i=0;i<nodes;i++){
+      const x=b.x+12+(b.w-24)*(i/(Math.max(nodes-1,1)));
+      ctx.fillStyle="#55ecff";
+      ctx.shadowColor="#55ecff";
+      ctx.shadowBlur=7;
+      ctx.beginPath();
+      ctx.arc(x,b.y+9,2.5,0,Math.PI*2);
+      ctx.fill();
+      ctx.shadowBlur=0;
+    }
+
+    if(b.booster){
+      const boostCount=b.w>180?3:(b.w>70?2:1);
+      for(let i=0;i<boostCount;i++){
+        const bx=b.x+b.w*(i+1)/(boostCount+1);
+        const by=b.y+b.h+4;
+        ctx.fillStyle="#102d42";
+        ctx.strokeStyle="#55ecff";
+        ctx.lineWidth=1.5;
+        ctx.beginPath();
+        ctx.roundRect(bx-8,by-3,16,9,3);
+        ctx.fill();
+        ctx.stroke();
+
+        const flame=7+Math.sin(performance.now()*.012+bx)*3;
+        ctx.fillStyle="rgba(70,235,255,.72)";
+        ctx.beginPath();
+        ctx.moveTo(bx-4,by+5);
+        ctx.lineTo(bx+4,by+5);
+        ctx.lineTo(bx,by+5+flame);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    ctx.fillStyle="#9ff7ff";
+    const corners=[
+      [b.x+7,b.y+7],[b.x+b.w-7,b.y+7],
+      [b.x+7,b.y+b.h-7],[b.x+b.w-7,b.y+b.h-7]
+    ];
+    for(const [x,y] of corners){
+      ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
+    }
     return;
+  }
 
-  const g=ctx.createLinearGradient(
-    b.x,b.y,
-    b.x+b.w,b.y
-  );
-
-  g.addColorStop(0,"#8d582f");
-  g.addColorStop(.5,"#c68a50");
-  g.addColorStop(1,"#80502c");
+  // LEVEL 1 — CUTE PASTEL BLOCK
+  const g=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);
+  g.addColorStop(0,"#fff0b5");
+  g.addColorStop(.45,"#ffd58f");
+  g.addColorStop(1,"#f6a96b");
 
   ctx.fillStyle=g;
-
-  ctx.fillRect(
-    b.x,
-    b.y,
-    b.w,
-    b.h
-  );
-
-  ctx.strokeStyle="#55331e";
+  ctx.strokeStyle="#c97b5b";
   ctx.lineWidth=3;
 
-  ctx.strokeRect(
-    b.x,
-    b.y,
-    b.w,
-    b.h
-  );
+  const radius=Math.min(10,b.h/2,Math.max(3,b.w/8));
+  ctx.beginPath();
+  ctx.roundRect(b.x,b.y,b.w,b.h,radius);
+  ctx.fill();
+  ctx.stroke();
 
-  ctx.strokeStyle="rgba(70,40,20,.45)";
+  // Cute stripe pattern
+  ctx.strokeStyle="rgba(255,255,255,.35)";
   ctx.lineWidth=2;
-
-  for(
-    let y=b.y+8;
-    y<b.y+b.h;
-    y+=12
-  ){
-
+  for(let y=b.y+9;y<b.y+b.h;y+=13){
     ctx.beginPath();
-
-    ctx.moveTo(
-      b.x+5,
-      y
-    );
-
-    ctx.lineTo(
-      b.x+b.w-5,
-      y
-    );
-
+    ctx.moveTo(b.x+7,y);
+    ctx.lineTo(b.x+b.w-7,y);
     ctx.stroke();
   }
-}
 
+  // Tiny candy-like bolts
+  ctx.fillStyle="#ff8fbc";
+  for(const x of [b.x+8,b.x+b.w-8]){
+    if(x<b.x+b.w-2){
+      ctx.beginPath();
+      ctx.arc(x,b.y+b.h/2,2.5,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+}
 
 function drawStar(s){
 
@@ -1722,9 +2600,11 @@ function draw(){
 
   drawBackground();
 
-  cloud(180,110,1);
-  cloud(540,90,.8);
-  cloud(920,150,.7);
+  if(level===1){
+    cloud(180,110,1);
+    cloud(540,90,.8);
+    cloud(920,150,.7);
+  }
 
   for(const b of blocks)
     drawBlock(b);
@@ -1769,25 +2649,29 @@ function loop(now){
 
   updateBlocks(dt);
   updatePigs(dt);
+
+  // Check enemy-vs-enemy impacts and crushing after both
+  // pig and block positions have been updated for this frame.
+  pigPigCollisions();
+  pigCrushCollisions();
+
   updateRobos(dt);
   updateParticles(dt);
 
 
-  if(
-    !gameWon &&
-    pigs.length &&
-    pigs.every(p=>!p.alive)
-  ){
-
-    gameWon=true;
-
-    document.getElementById("msg").innerHTML=
-      "TARGETS CLEARED<br><small>Score: "+
-      score+
-      "</small>";
-
-    document.getElementById("msg").style.display=
-      "block";
+  if(!gameWon && pigs.length && pigs.every(p=>!p.alive)){
+    if(level===2 && levelShots<2){
+      gameWon=false;
+      currentRobo=currentRobo || newRobo();
+      updateUI();
+    }else{
+      gameWon=true;
+      document.getElementById("msg").innerHTML=
+        level===2
+          ? "LEVEL 2 CLEARED<br><small>Future sector secured</small>"
+          : "TARGETS CLEARED<br><small>Score: "+score+"</small>";
+      document.getElementById("msg").style.display="block";
+    }
   }
 
 
@@ -1801,13 +2685,78 @@ function loop(now){
    CONTROLS
 ========================= */
 
-document.getElementById("reset").onclick=
-  resetGame;
+document.getElementById("reset").onclick=resetGame;
+
+function switchLevel(newLevel){
+  level=newLevel;
+  levelShots=0;
+  gameWon=false;
+  structureActivated=false;
+  structureActivated=false;
+  dragging=false;
+  keyboardAim=0;
+  keyboardPower=0;
+  keyboardActive=false;
+  hardwareAim=0;
+  hardwarePower=0;
+  robos=[];
+  particles=[];
+  createLevel();
+  currentRobo=newRobo();
+  if(controlMode==="serial") updateHardwarePouch();
+  updateUI();
+  document.getElementById("msg").style.display="none";
+}
+
+document.getElementById("level1Btn").onclick=()=>switchLevel(1);
+document.getElementById("level2Btn").onclick=()=>switchLevel(2);
 
 document.addEventListener("keydown",e=>{
+  const key=e.key.toLowerCase();
 
-  if(e.key==="r" || e.key==="R")
+  if(key==="r"){
     resetGame();
+    return;
+  }
+
+  // Keyboard simulation advertised in the help panel.
+  if(["w","s","a","d"," "].includes(key)){
+    e.preventDefault();
+  }
+
+  if(controlMode==="serial" || gameWon || !currentRobo || !currentRobo.ready)
+    return;
+
+  let changed=false;
+
+  if(key==="w"){
+    keyboardAim=Math.max(-1,keyboardAim-0.08);
+    changed=true;
+  }else if(key==="s"){
+    keyboardAim=Math.min(1,keyboardAim+0.08);
+    changed=true;
+  }else if(key==="a"){
+    keyboardPower=Math.max(0,keyboardPower-0.05);
+    changed=true;
+  }else if(key==="d"){
+    keyboardPower=Math.min(1,keyboardPower+0.05);
+    changed=true;
+  }else if(e.code==="Space"){
+    if(keyboardPower>0){
+      updateKeyboardPouch();
+      document.getElementById("power").style.display="none";
+      fireRobo();
+    }
+    return;
+  }
+
+  if(changed){
+    keyboardActive=true;
+    controlMode="keyboard";
+    updateKeyboardPouch();
+    updateControllerStatus();
+    document.getElementById("power").style.display="block";
+  }
 });
 
 
