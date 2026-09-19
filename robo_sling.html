@@ -260,6 +260,98 @@ canvas#game {
   .ui{top:12px;left:12px;right:12px}
 }
 
+
+/* ================= FINAL POLISH LAYER ================= */
+html,body{width:100%;height:100%;min-width:100%;min-height:100%;margin:0;padding:0;overflow:hidden}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+canvas#game{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;outline:0!important;touch-action:none;cursor:grab}
+canvas#game:active{cursor:grabbing}
+.ui{top:16px;left:16px;right:16px;display:flex;gap:14px;align-items:flex-start}
+.panel{background:rgba(255,255,255,.80);color:#29425a;border:1px solid rgba(255,255,255,.98);padding:11px 14px;border-radius:18px;box-shadow:0 14px 32px rgba(57,94,123,.14),inset 0 1px 0 #fff;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.title{font-size:25px;line-height:1;letter-spacing:2.3px;text-shadow:0 2px 0 #fff}
+.sub{font-size:11px;color:#668298;opacity:1;font-weight:800;letter-spacing:.45px;margin-top:5px}
+.stats{gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.stats>div{background:rgba(255,255,255,.58);border:1px solid rgba(91,132,157,.14);padding:7px 9px;border-radius:12px;font-size:11px;letter-spacing:.5px}
+.stats b{color:#ef6da7;margin-left:4px}
+#help{left:16px;bottom:16px;background:rgba(255,255,255,.80);color:#49667d;border:1px solid rgba(255,255,255,.98);padding:10px 13px;border-radius:14px;box-shadow:0 10px 24px rgba(57,94,123,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:11px;font-weight:800;line-height:1.45}
+#power{left:16px;bottom:72px;width:250px;color:#49667d;background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.98);padding:9px 11px;border-radius:14px;box-shadow:0 10px 24px rgba(57,94,123,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#bar{height:12px;background:rgba(87,119,142,.15)}
+#fill{background:linear-gradient(90deg,#8edaff,#ff8fc0,#ffd86e);box-shadow:0 0 12px rgba(255,143,192,.40)}
+#levelButtons{right:16px;bottom:166px;gap:7px}
+#levelButtons button,#serialBtn,#reset{font-family:inherit;border:1px solid rgba(255,255,255,.98)!important;box-shadow:0 9px 22px rgba(57,94,123,.13),inset 0 1px 0 rgba(255,255,255,.70);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .14s ease,filter .14s ease,box-shadow .14s ease}
+#levelButtons button:hover,#serialBtn:hover,#reset:hover{transform:translateY(-2px);filter:brightness(1.04)}
+#levelButtons button:active,#serialBtn:active,#reset:active{transform:translateY(0)}
+#levelButtons button:focus-visible,#serialBtn:focus-visible,#reset:focus-visible{outline:3px solid rgba(255,255,255,.92);outline-offset:2px}
+body.level-1{background:linear-gradient(180deg,#a7e6ff 0%,#edfaff 57%,#c8efb0 100%)!important}
+body.level-2{background:linear-gradient(180deg,#ffc7e7 0%,#fff0f8 52%,#cff4d3 100%)!important}
+body.level-1 #levelButtons button{background:rgba(111,181,224,.88)!important;color:#fff!important}
+body.level-1 #levelButtons button.active{background:#ff8fbd!important;box-shadow:0 0 0 2px rgba(255,255,255,.92),0 11px 25px rgba(255,143,189,.30)!important}
+body.level-2 #levelButtons button{background:rgba(166,126,210,.88)!important;color:#fff!important}
+body.level-2 #levelButtons button.active{background:#8d7fe7!important;box-shadow:0 0 0 2px rgba(255,255,255,.92),0 11px 25px rgba(141,127,231,.30)!important}
+#serialBtn{right:16px;bottom:72px;background:rgba(104,175,215,.88)!important;color:#fff!important}
+body.level-2 #serialBtn{background:rgba(139,120,209,.88)!important}
+#status{right:16px;bottom:128px;background:rgba(255,255,255,.82);color:#49667d;border:1px solid rgba(255,255,255,.98);box-shadow:0 9px 22px rgba(57,94,123,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#reset{right:16px;bottom:16px;background:rgba(71,102,124,.91)!important;color:#fff!important}
+#msg{min-width:320px;max-width:min(560px,90vw);padding:24px 30px;background:rgba(255,255,255,.94);color:#29425a;border:1px solid #fff;border-radius:24px;box-shadow:0 26px 64px rgba(46,82,107,.24),inset 0 1px 0 #fff;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);font-size:28px;line-height:1.15;text-shadow:none}
+#msg small{display:inline-block;margin-top:8px;color:#6c899f;font-size:13px;font-weight:900;letter-spacing:.4px}
+@media(max-width:800px){
+ .ui{top:9px;left:9px;right:9px;gap:8px}.panel{padding:8px 10px;border-radius:14px}.title{font-size:18px}.sub{font-size:8px}.stats{gap:5px;max-width:60%}.stats>div{padding:5px 6px;font-size:9px}
+ #help{left:9px;bottom:9px;max-width:57vw;font-size:9px;padding:8px 9px}#power{left:9px;bottom:61px;width:205px}#levelButtons{right:9px;bottom:155px}#serialBtn{right:9px;bottom:61px}#status{right:9px;bottom:108px}#reset{right:9px;bottom:9px}
+}
+
+
+/* ================= LEVEL 2 — PREVIOUS CYBER CITY DESIGN ================= */
+body.level-2{
+  background:
+    radial-gradient(circle at 15% 20%, rgba(45,220,255,.16), transparent 25%),
+    radial-gradient(circle at 85% 75%, rgba(112,78,255,.18), transparent 30%),
+    linear-gradient(135deg,#030712 0%,#08152b 50%,#02030a 100%) !important;
+}
+body.level-2 .panel{
+  background:rgba(4,16,30,.86) !important;
+  color:#e7fbff !important;
+  border-color:rgba(66,223,255,.22) !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.22), inset 0 1px 0 rgba(125,239,255,.08) !important;
+}
+body.level-2 .sub{color:#83cfe4 !important;text-shadow:0 0 10px rgba(66,223,255,.18)}
+body.level-2 .title{color:#eafcff !important;text-shadow:0 0 8px rgba(70,220,255,.75),0 0 20px rgba(76,91,255,.35) !important}
+body.level-2 .stats>div{
+  background:rgba(6,27,47,.72) !important;
+  border-color:rgba(66,223,255,.13) !important;
+  color:#bfefff !important;
+}
+body.level-2 .stats b{color:#42dfff !important;text-shadow:0 0 10px rgba(66,223,255,.45)}
+body.level-2 #help,
+body.level-2 #power,
+body.level-2 #status{
+  background:rgba(4,16,30,.88) !important;
+  color:#bdeefb !important;
+  border-color:rgba(66,223,255,.20) !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.24), inset 0 1px 0 rgba(125,239,255,.07) !important;
+}
+body.level-2 #bar{background:rgba(0,0,0,.45) !important;border:1px solid rgba(66,223,255,.16)}
+body.level-2 #fill{background:linear-gradient(90deg,#42dfff,#7c7cff,#ff4d9d) !important;box-shadow:0 0 14px rgba(66,223,255,.35)}
+body.level-2 #levelButtons button{
+  background:rgba(7,19,38,.94) !important;
+  color:#d9f8ff !important;
+  border-color:rgba(66,223,255,.65) !important;
+  text-shadow:0 0 7px rgba(66,223,255,.45);
+}
+body.level-2 #levelButtons button.active{
+  background:#0d7f9d !important;
+  box-shadow:0 0 0 2px rgba(66,223,255,.40),0 0 20px rgba(66,223,255,.32) !important;
+}
+body.level-2 #serialBtn{background:rgba(7,19,38,.94) !important;color:#d9f8ff !important;border-color:rgba(66,223,255,.65) !important}
+body.level-2 #reset{background:rgba(7,19,38,.94) !important;color:#d9f8ff !important;border-color:rgba(66,223,255,.45) !important}
+body.level-2 #msg{
+  background:rgba(3,13,26,.94) !important;
+  color:#e7fbff !important;
+  border-color:rgba(66,223,255,.42) !important;
+  box-shadow:0 26px 64px rgba(0,0,0,.42),inset 0 1px 0 rgba(130,240,255,.10) !important;
+  text-shadow:0 0 8px rgba(66,223,255,.45) !important;
+}
+body.level-2 #msg small{color:#8ad8ed !important}
+
 </style>
 </head>
 <body>
@@ -283,12 +375,12 @@ canvas#game {
   <div id="bar"><div id="fill"></div></div>
 </div>
 
-<div id="help">MOUSE: DRAG SLINGSHOT POUCH → RELEASE<br>KEYBOARD SIMULATION: W/S AIM · A/D POWER · SPACE FIRE</div>
+<div id="help">DRAG ROBO BACK → RELEASE TO LAUNCH<br>W/S AIM · A/D POWER · SPACE FIRE · R RESET</div>
 <div id="levelButtons">
-  <button id="level1Btn">LEVEL 1</button>
-  <button id="level2Btn">LEVEL 2</button>
+  <button id="level1Btn" aria-label="Play Level 1">LEVEL 1</button>
+  <button id="level2Btn" aria-label="Play Level 2">LEVEL 2</button>
 </div>
-<button id="serialBtn">CONNECT CONTROLLER</button>
+<button id="serialBtn" title="Connect an ESP32 or compatible Web Serial controller">CONNECT CONTROLLER</button>
 <button id="reset">RESET</button>
 <div id="status">CONTROL: MOUSE</div>
 <div id="msg"></div>
@@ -300,8 +392,20 @@ const ctx=canvas.getContext("2d");
 const W=1500;
 const H=720;
 
-canvas.width=W;
-canvas.height=H;
+let view={scale:1,ox:0,oy:0,dpr:1};
+function resizeCanvas(){
+  const cssW=Math.max(320,window.innerWidth);
+  const cssH=Math.max(240,window.innerHeight);
+  view.dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.floor(cssW*view.dpr);
+  canvas.height=Math.floor(cssH*view.dpr);
+  view.scale=Math.min(cssW/W,cssH/H);
+  view.ox=(cssW-W*view.scale)/2;
+  view.oy=(cssH-H*view.scale)/2;
+  ctx.setTransform(view.dpr,0,0,view.dpr,0,0);
+}
+window.addEventListener("resize",resizeCanvas,{passive:true});
+resizeCanvas();
 
 const G=900;
 const GROUND=590;
@@ -342,6 +446,7 @@ let pigs=[];
 let stars=[];
 let rings=[];
 let particles=[];
+let cameraShake=0;
 
 
 /* =========================
@@ -391,7 +496,8 @@ function makePig(x,y){
     supported:true,
     crushCooldown:0,
     spawnGrace:2.0,
-    lastDamageShot:-1
+    lastDamageShot:-1,
+    hitFlash:0
   };
 }
 
@@ -405,7 +511,7 @@ function createLevel(){
     return;
   }
 
-  // LEVEL 1 — STEAMPUNK / ORIGINAL STYLE
+  // LEVEL 1 — CUTE CARTOON
   blocks=[
     makeBlock(850,555,560,35),
     makeBlock(850,425,45,132),
@@ -550,6 +656,8 @@ function resetGame(){
 
   robos=[];
   particles=[];
+  cameraShake=0;
+  last=performance.now();
 
   createLevel();
 
@@ -560,6 +668,7 @@ function resetGame(){
 
   document.getElementById("power").style.display="none";
   document.getElementById("msg").style.display="none";
+  document.getElementById("power").style.display="none";
 }
 
 function updateUI(){
@@ -616,28 +725,42 @@ function updateControllerStatus(){
   status.textContent=`CONTROL: CONTROLLER  |  POWER ${p}%  |  AIM ${a}`;
 }
 
-function setPouchFromControls(power,aim){
-  if(!currentRobo || !currentRobo.ready) return;
+function setPouchFromControls(power, aim){
 
-  power=Math.max(0,Math.min(1,power));
-  aim=Math.max(-1,Math.min(1,aim));
+  if(!currentRobo || !currentRobo.ready)
+    return;
 
-  // Power is the TOTAL pull distance. Aim changes the launch angle
-  // without accidentally increasing the total launch power.
-  const pull=power*MAX_PULL;
-  const angle=aim*0.55;
-  const dx=-pull/Math.sqrt(1+angle*angle);
-  const dy=-dx*angle;
+  power = Math.max(0, Math.min(1, power));
+  aim   = Math.max(-1, Math.min(1, aim));
 
-  pouch.x=SLING.x+dx;
-  pouch.y=SLING.y+dy;
+  // Maximum pull distance
+  const pull = power * MAX_PULL;
 
-  currentRobo.x=pouch.x;
-  currentRobo.y=pouch.y;
+  // Maximum aiming angle
+  // -100 AIM = very high
+  // 0 AIM = center
+  // +100 AIM = very low
+  const angle = aim * 3.5;
 
-  document.getElementById("fill").style.width=(power*100)+"%";
+  // Convert angle + pull into slingshot position
+  const dx =
+    -pull /
+    Math.sqrt(1 + angle * angle);
+
+  const dy =
+    -dx * angle;
+
+  // Move Robo
+  pouch.x = SLING.x + dx;
+  pouch.y = SLING.y + dy;
+
+  currentRobo.x = pouch.x;
+  currentRobo.y = pouch.y;
+
+  // Power bar
+  document.getElementById("fill").style.width =
+    (power * 100) + "%";
 }
-
 function updateHardwarePouch(){
   setPouchFromControls(hardwarePower,hardwareAim);
 }
@@ -724,7 +847,7 @@ async function readSerial(){
 
 async function connectSerial(){
   if(!("serial" in navigator)){
-    alert("Web Serial is not supported here. Use Chrome or Edge.");
+    alert("Web Serial is not supported in this browser. Use Chrome or Edge.");
     return;
   }
   try{
@@ -774,12 +897,15 @@ function pos(e){
   const r=canvas.getBoundingClientRect();
 
   return {
-    x:(e.clientX-r.left)*W/r.width,
-    y:(e.clientY-r.top)*H/r.height
+    x:(e.clientX-r.left-view.ox)/view.scale,
+    y:(e.clientY-r.top-view.oy)/view.scale
   };
 }
 
 canvas.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+
+  if(e.button!==0) return;
 
   if(controlMode==="serial" || !currentRobo || !currentRobo.ready || gameWon)
     return;
@@ -805,6 +931,7 @@ canvas.addEventListener("pointerdown",e=>{
 
 
 canvas.addEventListener("pointermove",e=>{
+  e.preventDefault();
 
   if(!dragging || !currentRobo || !currentRobo.ready)
     return;
@@ -834,20 +961,22 @@ canvas.addEventListener("pointermove",e=>{
 });
 
 
-function releaseMouseShot(){
-  if(!dragging)
-    return;
-
+function releaseMouseShot(e){
+  if(!dragging) return;
   dragging=false;
-
+  try{ if(e && e.pointerId!=null) canvas.releasePointerCapture(e.pointerId); }catch(err){}
   document.getElementById("power").style.display="none";
-
-  if(currentRobo && currentRobo.ready)
-    fireRobo();
+  if(currentRobo && currentRobo.ready) fireRobo();
 }
 
 canvas.addEventListener("pointerup",releaseMouseShot);
 canvas.addEventListener("pointercancel",releaseMouseShot);
+canvas.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("visibilitychange",()=>{
+  last=performance.now();
+  dragging=false;
+  if(document.hidden) document.getElementById("power").style.display="none";
+});
 
 
 /* =========================
@@ -925,7 +1054,8 @@ function fireRobo(){
 
   updateUI();
 
-  burst(fired.x,fired.y,10);
+  burst(fired.x,fired.y,12);
+  cameraShake=Math.max(cameraShake,2.5);
 
   setTimeout(()=>{
 
@@ -1107,17 +1237,22 @@ function killPig(p){
 
   if((p.health ?? 1)>1){
     p.health--;
+    p.hitFlash=.18;
     p.vx*=0.35;
     p.vy=-80;
     score+=40;
+    cameraShake=Math.max(cameraShake,2.5);
     updateUI();
-    burst(p.x,p.y,14);
+    burst(p.x,p.y,16);
     return;
   }
 
   p.alive=false;
+  p.health=0;
   p.vx=0;
   p.vy=0;
+  p.hitFlash=.25;
+  cameraShake=Math.max(cameraShake,5.5);
 
   score+=100;
 
@@ -1168,6 +1303,12 @@ function robotBlockCollisions(r){
     }
 
     r.hitBlocks.add(b);
+
+    const impactSpeed=Math.hypot(r.vx,r.vy);
+    if(impactSpeed>120){
+      cameraShake=Math.max(cameraShake,Math.min(6,2+impactSpeed/240));
+      burst(r.x,r.y,Math.min(10,4+Math.floor(impactSpeed/220)));
+    }
 
     // First-shot impact damages the block; later impacts still push it.
     if(r.bounced===true){
@@ -1282,8 +1423,9 @@ function destroyBlock(b){
   burst(
     b.x+b.w/2,
     b.y+b.h/2,
-    25
+    30
   );
+  cameraShake=Math.max(cameraShake,6);
 }
 
 
@@ -1494,6 +1636,7 @@ function updatePigs(dt){
 
     if(p.spawnGrace>0)
       p.spawnGrace=Math.max(0,p.spawnGrace-dt);
+    p.hitFlash=Math.max(0,(p.hitFlash||0)-dt);
 
     /*
       HARD SPAWN LOCK:
@@ -1637,25 +1780,72 @@ function isPigCrushed(p){
 */
 function pigPigCollisions(){
   for(let i=0;i<pigs.length;i++){
-    const a=pigs[i]; if(!a.alive || a.spawnGrace>0) continue;
+    const a=pigs[i];
+    if(!a.alive || a.spawnGrace>0) continue;
+
     for(let j=i+1;j<pigs.length;j++){
-      const b=pigs[j]; if(!b.alive || b.spawnGrace>0) continue;
-      const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy), minDist=a.radius+b.radius;
+      const b=pigs[j];
+      if(!b.alive || b.spawnGrace>0) continue;
+
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const d=Math.hypot(dx,dy);
+      const minDist=a.radius+b.radius;
       if(d>=minDist) continue;
+
+      // A pig that is descending onto another pig is a distinct "landing" event.
+      // The landing pig and the pig underneath are both destroyed instantly.
+      const horizontalOverlap=(a.radius+b.radius)-Math.abs(dx);
+      const aLandingOnB =
+        a.y < b.y &&
+        a.vy > 70 &&
+        horizontalOverlap > Math.max(10,a.radius*.30) &&
+        a.y+a.radius >= b.y-b.radius-10;
+      const bLandingOnA =
+        b.y < a.y &&
+        b.vy > 70 &&
+        horizontalOverlap > Math.max(10,b.radius*.30) &&
+        b.y+b.radius >= a.y-a.radius-10;
+
+      if(aLandingOnB || bLandingOnA){
+        const x=(a.x+b.x)/2, y=(a.y+b.y)/2;
+        smashPig(a);smashPig(b);
+        cameraShake=Math.max(cameraShake,7);
+        burst(x,y,30);
+        continue;
+      }
+
       const nx=dx/Math.max(d,.001), ny=dy/Math.max(d,.001);
       const rvx=b.vx-a.vx, rvy=b.vy-a.vy;
       const impact=Math.abs(rvx*nx+rvy*ny);
-      // Any meaningful impact between enemies destroys both.
+
+      // Existing enemy-vs-enemy collision behavior remains unchanged.
       if(impact>12 || Math.hypot(a.vx,a.vy)>35 || Math.hypot(b.vx,b.vy)>35){
         const x=(a.x+b.x)/2, y=(a.y+b.y)/2;
-        killPig(a); killPig(b); burst(x,y,24); continue;
+        killPig(a);killPig(b);burst(x,y,24);continue;
       }
+
+      // Separate gentle overlaps instead of creating accidental damage.
       const correction=(minDist-d)/2;
-      a.x-=nx*correction; a.y-=ny*correction; b.x+=nx*correction; b.y+=ny*correction;
+      a.x-=nx*correction;a.y-=ny*correction;
+      b.x+=nx*correction;b.y+=ny*correction;
     }
   }
 }
 
+function smashPig(p){
+  if(!p.alive) return;
+  p.alive=false;
+  p.health=0;
+  p.vx=0;
+  p.vy=0;
+  p.hitFlash=.30;
+  score+=100;
+  updateUI();
+  burst(p.x,p.y,24);
+}
+
+/*
+  Detects a pig being crushed/caught between blocks.
 /*
   Detects a pig being crushed/caught between blocks.
 
@@ -1756,19 +1946,20 @@ function bonusCollisions(r){
    PARTICLES
 ========================= */
 
-function burst(x,y,n){
-
+function burst(x,y,n,palette=null){
+  const colors=palette || (level===1
+    ? ["#ff8fbc","#ffd56a","#8ddcff","#ffffff"]
+    : ["#c9a7ff","#ff9fcf","#87e9c0","#ffe083","#ffffff"]);
   for(let i=0;i<n;i++){
-
     const a=Math.random()*Math.PI*2;
     const sp=60+Math.random()*220;
-
     particles.push({
       x,y,
       vx:Math.cos(a)*sp,
       vy:Math.sin(a)*sp,
       life:.4+Math.random()*.6,
-      size:3+Math.random()*5
+      size:3+Math.random()*5,
+      color:colors[(Math.random()*colors.length)|0]
     });
   }
 }
@@ -1806,39 +1997,74 @@ function drawBackground(){
   if(level===2){
     const g=ctx.createLinearGradient(0,0,0,H);
     g.addColorStop(0,"#020611");
-    g.addColorStop(.52,"#071a35");
+    g.addColorStop(.48,"#071a35");
     g.addColorStop(1,"#02040b");
     ctx.fillStyle=g;
     ctx.fillRect(0,0,W,H);
 
-    ctx.fillStyle="rgba(40,205,255,.10)";
-    ctx.beginPath();
-    ctx.arc(1180,125,120,0,Math.PI*2);
-    ctx.fill();
+    // Distant atmospheric glow.
+    const glow=ctx.createRadialGradient(1180,120,8,1180,120,190);
+    glow.addColorStop(0,"rgba(77,225,255,.24)");
+    glow.addColorStop(.42,"rgba(58,154,255,.08)");
+    glow.addColorStop(1,"rgba(58,154,255,0)");
+    ctx.fillStyle=glow;
+    ctx.beginPath();ctx.arc(1180,120,190,0,Math.PI*2);ctx.fill();
 
+    // Holographic skyline haze.
+    const haze=ctx.createLinearGradient(0,260,0,GROUND);
+    haze.addColorStop(0,"rgba(31,92,143,0)");
+    haze.addColorStop(1,"rgba(16,68,101,.18)");
+    ctx.fillStyle=haze;ctx.fillRect(0,260,W,GROUND-260);
+
+    // Perspective city grid.
     ctx.strokeStyle="rgba(55,210,255,.14)";
     ctx.lineWidth=1;
     for(let x=0;x<=W;x+=75){
-      ctx.beginPath(); ctx.moveTo(x,GROUND); ctx.lineTo(x-80,220); ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x,GROUND);ctx.lineTo(x-90,220);ctx.stroke();
     }
     for(let y=250;y<GROUND;y+=55){
-      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
     }
 
-    ctx.fillStyle="#061225";
+    // Distant buildings with restrained animated windows.
+    const now=performance.now();
     for(let x=20;x<W;x+=100){
       const h=70+((x*13)%130);
-      ctx.fillRect(x,GROUND-h,65,h);
-      ctx.fillStyle="rgba(55,220,255,.22)";
-      for(let yy=GROUND-h+18;yy<GROUND-12;yy+=24)
-        ctx.fillRect(x+13,yy,8,3);
       ctx.fillStyle="#061225";
+      ctx.fillRect(x,GROUND-h,65,h);
+      const lit=Math.sin(now*.0016+x*.035)>-.35;
+      ctx.fillStyle=lit?"rgba(55,220,255,.24)":"rgba(55,220,255,.08)";
+      for(let yy=GROUND-h+18;yy<GROUND-12;yy+=24){
+        if(((yy+x)/24|0)%3!==1) ctx.fillRect(x+13,yy,8,3);
+        if(((yy+x)/24|0)%4===0) ctx.fillRect(x+34,yy+5,14,3);
+      }
     }
 
+    // A few holographic billboard frames.
+    const panels=[[240,205,118,50],[440,285,92,42],[1260,235,134,54]];
+    panels.forEach((p,i)=>{
+      const pulse=.45+.55*Math.sin(now*.002+i*1.7);
+      ctx.strokeStyle=`rgba(${i===1?124:66},${i===1?116:223},255,${.14+.08*pulse})`;
+      ctx.fillStyle="rgba(30,155,210,.035)";
+      ctx.lineWidth=1.5;
+      ctx.fillRect(p[0],p[1],p[2],p[3]);
+      ctx.strokeRect(p[0],p[1],p[2],p[3]);
+      ctx.fillRect(p[0]+10,p[1]+12,p[2]*.35,3);
+      ctx.fillRect(p[0]+10,p[1]+24,p[2]*.62,2);
+    });
+
+    // Cyber road / launch floor.
     ctx.fillStyle="#07192b";
     ctx.fillRect(0,GROUND,W,H-GROUND);
     ctx.fillStyle="#17455a";
     ctx.fillRect(0,GROUND,W,8);
+    ctx.strokeStyle="rgba(66,223,255,.11)";
+    ctx.lineWidth=2;
+    for(let x=0;x<W;x+=120){
+      ctx.beginPath();ctx.moveTo(x,GROUND+28);ctx.lineTo(x+55,GROUND+28);ctx.stroke();
+    }
+    ctx.fillStyle="rgba(66,223,255,.10)";
+    ctx.fillRect(0,GROUND+46,W,2);
     return;
   }
 
@@ -1850,16 +2076,19 @@ function drawBackground(){
   ctx.fillStyle=g;
   ctx.fillRect(0,0,W,H);
 
-  // Puffy sun
+  // Warm sun glow.
+  const sunGlow=ctx.createRadialGradient(1180,105,8,1180,105,120);
+  sunGlow.addColorStop(0,"rgba(255,247,189,.90)");
+  sunGlow.addColorStop(1,"rgba(255,247,189,0)");
+  ctx.fillStyle=sunGlow;ctx.beginPath();ctx.arc(1180,105,120,0,Math.PI*2);ctx.fill();
+
   ctx.fillStyle="#ffe58a";
   ctx.shadowColor="#fff2af";
   ctx.shadowBlur=20;
-  ctx.beginPath();
-  ctx.arc(1180,105,52,0,Math.PI*2);
-  ctx.fill();
+  ctx.beginPath();ctx.arc(1180,105,52,0,Math.PI*2);ctx.fill();
   ctx.shadowBlur=0;
 
-  // Distant rounded hills
+  // Distant rounded hills.
   ctx.fillStyle="#a8d98a";
   ctx.beginPath();
   ctx.moveTo(0,475);
@@ -1867,10 +2096,7 @@ function drawBackground(){
   ctx.quadraticCurveTo(520,340,720,470);
   ctx.quadraticCurveTo(900,335,1080,470);
   ctx.quadraticCurveTo(1260,350,1500,465);
-  ctx.lineTo(1500,GROUND);
-  ctx.lineTo(0,GROUND);
-  ctx.closePath();
-  ctx.fill();
+  ctx.lineTo(1500,GROUND);ctx.lineTo(0,GROUND);ctx.closePath();ctx.fill();
 
   ctx.fillStyle="#82c96b";
   ctx.beginPath();
@@ -1878,16 +2104,10 @@ function drawBackground(){
   ctx.quadraticCurveTo(260,415,520,505);
   ctx.quadraticCurveTo(800,400,1070,505);
   ctx.quadraticCurveTo(1290,420,1500,495);
-  ctx.lineTo(1500,GROUND);
-  ctx.lineTo(0,GROUND);
-  ctx.closePath();
-  ctx.fill();
+  ctx.lineTo(1500,GROUND);ctx.lineTo(0,GROUND);ctx.closePath();ctx.fill();
 
-  // Soft grassy ground
-  ctx.fillStyle="#69ac55";
-  ctx.fillRect(0,GROUND,W,H-GROUND);
-  ctx.fillStyle="#8ed56a";
-  ctx.fillRect(0,GROUND,W,10);
+  ctx.fillStyle="#69ac55";ctx.fillRect(0,GROUND,W,H-GROUND);
+  ctx.fillStyle="#8ed56a";ctx.fillRect(0,GROUND,W,10);
 }
 
 function cloud(x,y,s){
@@ -1914,48 +2134,61 @@ function cloud(x,y,s){
 
 
 function drawSling(){
-
-  const x=SLING.x;
-  const y=SLING.y;
-
+  const x=SLING.x,y=SLING.y;
+  const isTwo=level===2;
+  ctx.save();
   ctx.lineCap="round";
-  ctx.lineWidth=18;
-  ctx.strokeStyle="#6b3f20";
 
-  ctx.beginPath();
-  ctx.moveTo(x,y+120);
-  ctx.lineTo(x-25,y+20);
-  ctx.stroke();
+  if(isTwo){
+    // Cyber version of the slingshot: same geometry, purely visual material swap.
+    ctx.lineWidth=22;
+    ctx.strokeStyle="#102a3d";
+    ctx.shadowColor="rgba(66,223,255,.30)";ctx.shadowBlur=10;
+    ctx.beginPath();ctx.moveTo(x,y+120);ctx.lineTo(x-25,y+20);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-25,y+20);ctx.lineTo(x-55,y-60);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-25,y+20);ctx.lineTo(x+25,y-65);ctx.stroke();
+    ctx.shadowBlur=0;
 
-  ctx.beginPath();
-  ctx.moveTo(x-25,y+20);
-  ctx.lineTo(x-55,y-60);
-  ctx.stroke();
+    ctx.strokeStyle="#42dfff";ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(x-24,y+19);ctx.lineTo(x-42,y-46);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-54,y-59);ctx.lineTo(x+25,y-65);ctx.stroke();
 
-  ctx.beginPath();
-  ctx.moveTo(x-25,y+20);
-  ctx.lineTo(x+25,y-65);
-  ctx.stroke();
+    // Small connector nodes.
+    ctx.fillStyle="#55ecff";ctx.shadowColor="#42dfff";ctx.shadowBlur=8;
+    for(const [nx,ny] of [[x-25,y+20],[x-55,y-60],[x+25,y-65]]){
+      ctx.beginPath();ctx.arc(nx,ny,4,0,Math.PI*2);ctx.fill();
+    }
+    ctx.shadowBlur=0;
 
+    if(currentRobo && currentRobo.ready){
+      ctx.lineWidth=6;ctx.strokeStyle="rgba(105,239,255,.92)";
+      ctx.beginPath();ctx.moveTo(x-55,y-60);ctx.lineTo(currentRobo.x,currentRobo.y);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x+25,y-65);ctx.lineTo(currentRobo.x,currentRobo.y);ctx.stroke();
 
-  if(currentRobo && currentRobo.ready){
+      ctx.fillStyle="#16364c";ctx.strokeStyle="#55ecff";ctx.lineWidth=2;
+      ctx.beginPath();ctx.ellipse(currentRobo.x,currentRobo.y+4,30,10,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    }
+  }else{
+    ctx.lineWidth=22;
+    ctx.strokeStyle="#8b5a39";
+    ctx.shadowColor="rgba(79,55,38,.20)";ctx.shadowBlur=8;
+    ctx.beginPath();ctx.moveTo(x,y+120);ctx.lineTo(x-25,y+20);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-25,y+20);ctx.lineTo(x-55,y-60);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x-25,y+20);ctx.lineTo(x+25,y-65);ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.strokeStyle="rgba(255,230,190,.55)";ctx.lineWidth=4;
+    ctx.beginPath();ctx.moveTo(x-24,y+19);ctx.lineTo(x-42,y-46);ctx.stroke();
 
-    ctx.lineWidth=7;
-    ctx.strokeStyle="#3a2020";
-
-    ctx.beginPath();
-    ctx.moveTo(x-55,y-60);
-    ctx.lineTo(currentRobo.x,currentRobo.y);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(x+25,y-65);
-    ctx.lineTo(currentRobo.x,currentRobo.y);
-    ctx.stroke();
+    if(currentRobo && currentRobo.ready){
+      ctx.lineWidth=7;ctx.strokeStyle="#5a3030";
+      ctx.beginPath();ctx.moveTo(x-55,y-60);ctx.lineTo(currentRobo.x,currentRobo.y);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x+25,y-65);ctx.lineTo(currentRobo.x,currentRobo.y);ctx.stroke();
+      ctx.fillStyle="#f4c8a1";ctx.strokeStyle="#9c6b4a";ctx.lineWidth=2;
+      ctx.beginPath();ctx.ellipse(currentRobo.x,currentRobo.y+4,30,10,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    }
   }
+  ctx.restore();
 }
-
-
 function drawRobo(r){
 
   ctx.save();
@@ -2089,212 +2322,92 @@ function drawRobo(r){
 function drawPig(p){
   if(!p.alive) return;
 
-  // LEVEL 2 keeps the cyber enemy art.
-  if(level===2){
-    ctx.save();
-    ctx.translate(p.x,p.y);
+  ctx.save();
+  ctx.translate(p.x,p.y);
+  const isTwo=level===2;
+  const pulse=.5+.5*Math.sin(performance.now()*.006+p.x*.02);
+  const bob=Math.sin(performance.now()*.004+p.x*.02)*1.4;
+  ctx.translate(0,bob);
 
-    const pulse=.5+.5*Math.sin(performance.now()*.006+p.x);
+  // Soft contact shadow.
+  ctx.fillStyle=isTwo?"rgba(0,0,0,.30)":"rgba(48,73,94,.16)";
+  ctx.beginPath();ctx.ellipse(3,11,28,16,0,0,Math.PI*2);ctx.fill();
 
-    ctx.fillStyle="rgba(0,0,0,.25)";
-    ctx.beginPath();
-    ctx.ellipse(3,9,28,17,0,0,Math.PI*2);
-    ctx.fill();
-
+  if(isTwo){
+    // Cyber shell.
     const g=ctx.createRadialGradient(-9,-12,2,0,0,31);
     g.addColorStop(0,"#e5fbff");
     g.addColorStop(.32,"#63d4e7");
     g.addColorStop(.68,"#1a6484");
     g.addColorStop(1,"#071b31");
     ctx.fillStyle=g;
-    ctx.beginPath();
-    ctx.arc(0,0,28,0,Math.PI*2);
-    ctx.fill();
+    ctx.beginPath();ctx.arc(0,0,28,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#42dfff";ctx.lineWidth=2.5;ctx.shadowColor="#42dfff";ctx.shadowBlur=11;ctx.stroke();ctx.shadowBlur=0;
 
-    ctx.strokeStyle="#42dfff";
-    ctx.lineWidth=2.5;
-    ctx.shadowColor="#42dfff";
-    ctx.shadowBlur=10;
-    ctx.stroke();
-    ctx.shadowBlur=0;
-
+    // Ears / side fins.
     ctx.fillStyle="#123f59";
-    ctx.beginPath();
-    ctx.moveTo(-19,-19); ctx.lineTo(-29,-33); ctx.lineTo(-9,-25); ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(19,-19); ctx.lineTo(29,-33); ctx.lineTo(9,-25); ctx.closePath();
-    ctx.fill();
+    ctx.beginPath();ctx.moveTo(-19,-19);ctx.lineTo(-29,-33);ctx.lineTo(-9,-25);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(19,-19);ctx.lineTo(29,-33);ctx.lineTo(9,-25);ctx.closePath();ctx.fill();
 
-    ctx.fillStyle="#06111f";
-    ctx.strokeStyle="rgba(66,223,255,.8)";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.roundRect(-20,-12,40,18,7);
-    ctx.fill();
-    ctx.stroke();
+    // Visor.
+    ctx.fillStyle="#06111f";ctx.strokeStyle="rgba(66,223,255,.9)";ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(-20,-12,40,18,7);ctx.fill();ctx.stroke();
+    ctx.fillStyle=`rgba(70,235,255,${.72+.28*pulse})`;ctx.shadowColor="#42dfff";ctx.shadowBlur=12;
+    ctx.beginPath();ctx.arc(-10,-3,4,0,Math.PI*2);ctx.arc(10,-3,4,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
 
-    ctx.fillStyle=`rgba(70,235,255,${.72+.28*pulse})`;
-    ctx.shadowColor="#42dfff";
-    ctx.shadowBlur=12;
-    ctx.beginPath();
-    ctx.arc(-10,-3,4,0,Math.PI*2);
-    ctx.arc(10,-3,4,0,Math.PI*2);
-    ctx.fill();
-    ctx.shadowBlur=0;
+    // Brow plates.
+    ctx.strokeStyle="#081525";ctx.lineWidth=4;
+    ctx.beginPath();ctx.moveTo(-17,-13);ctx.lineTo(-5,-10);ctx.moveTo(17,-13);ctx.lineTo(5,-10);ctx.stroke();
 
-    ctx.strokeStyle="#081525";
-    ctx.lineWidth=4;
-    ctx.beginPath();
-    ctx.moveTo(-17,-13); ctx.lineTo(-5,-10);
-    ctx.moveTo(17,-13); ctx.lineTo(5,-10);
-    ctx.stroke();
+    // Snout module.
+    ctx.fillStyle="#18384c";ctx.strokeStyle="#59e8ff";ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(-14,9,28,14,6);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#06111f";ctx.beginPath();ctx.arc(-6,15,3,0,Math.PI*2);ctx.arc(6,15,3,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#8ff6ff";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-9,25);ctx.lineTo(0,20);ctx.lineTo(9,25);ctx.stroke();
 
-    ctx.fillStyle="#18384c";
-    ctx.strokeStyle="#59e8ff";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.roundRect(-14,9,28,14,6);
-    ctx.fill();
-    ctx.stroke();
+    // Antenna.
+    ctx.strokeStyle="#4de9ff";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-28);ctx.lineTo(0,-39);ctx.stroke();
+    ctx.fillStyle="#ff4d9d";ctx.shadowColor="#ff4d9d";ctx.shadowBlur=10;ctx.beginPath();ctx.arc(0,-41,4.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
 
-    ctx.fillStyle="#06111f";
-    ctx.beginPath();
-    ctx.arc(-6,15,3,0,Math.PI*2);
-    ctx.arc(6,15,3,0,Math.PI*2);
-    ctx.fill();
+  }else{
+    // Cute Level 1 pig.
+    const ear=ctx.createLinearGradient(0,-35,0,-12);
+    ear.addColorStop(0,"#ffb7cf");ear.addColorStop(1,"#ff8eb9");ctx.fillStyle=ear;
+    ctx.beginPath();ctx.moveTo(-18,-18);ctx.quadraticCurveTo(-30,-37,-12,-29);ctx.quadraticCurveTo(-5,-25,-9,-17);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(18,-18);ctx.quadraticCurveTo(30,-37,12,-29);ctx.quadraticCurveTo(5,-25,9,-17);ctx.closePath();ctx.fill();
 
-    ctx.strokeStyle="#8ff6ff";
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(-9,25); ctx.lineTo(0,20); ctx.lineTo(9,25);
-    ctx.stroke();
+    const g=ctx.createRadialGradient(-9,-12,2,0,0,31);
+    g.addColorStop(0,"#fff5fb");g.addColorStop(.45,"#ffc4df");g.addColorStop(.82,"#ff99c2");g.addColorStop(1,"#ea6f9d");
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,28,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#d95f8f";ctx.lineWidth=2.5;ctx.stroke();
 
-    ctx.strokeStyle="#4de9ff";
-    ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(0,-28); ctx.lineTo(0,-39); ctx.stroke();
+    ctx.fillStyle="#ffd86e";ctx.beginPath();ctx.moveTo(-7,-25);ctx.quadraticCurveTo(0,-36,7,-25);ctx.quadraticCurveTo(4,-20,0,-22);ctx.quadraticCurveTo(-4,-20,-7,-25);ctx.fill();
 
-    ctx.fillStyle="#ff4d9d";
-    ctx.shadowColor="#ff4d9d";
-    ctx.shadowBlur=10;
-    ctx.beginPath(); ctx.arc(0,-41,4.5,0,Math.PI*2); ctx.fill();
-    ctx.shadowBlur=0;
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.ellipse(-10,-6,9,11,0,0,Math.PI*2);ctx.ellipse(10,-6,9,11,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#5a4059";ctx.beginPath();ctx.arc(-8,-4,4.5,0,Math.PI*2);ctx.arc(8,-4,4.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(-6.5,-6,1.5,0,Math.PI*2);ctx.arc(9.5,-6,1.5,0,Math.PI*2);ctx.fill();
 
-    ctx.restore();
-    return;
+    ctx.strokeStyle="#914f75";ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(-18,-15);ctx.lineTo(-13,-17);ctx.moveTo(18,-15);ctx.lineTo(13,-17);ctx.stroke();
+    ctx.fillStyle="#ff8fae";ctx.beginPath();ctx.ellipse(0,10,13,8,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#9d4f69";ctx.beginPath();ctx.ellipse(-5,10,2.7,2.2,0,0,Math.PI*2);ctx.ellipse(5,10,2.7,2.2,0,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#944765";ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(0,14,7,.15,Math.PI-.15);ctx.stroke();
+    ctx.fillStyle="rgba(255,103,151,.45)";ctx.beginPath();ctx.ellipse(-19,10,6,3.5,0,0,Math.PI*2);ctx.ellipse(19,10,6,3.5,0,0,Math.PI*2);ctx.fill();
   }
 
-  // LEVEL 1 — CUTE PASTEL ENEMY
-  ctx.save();
-  ctx.translate(p.x,p.y);
+  // Two-hit indicator. Normal Robo damage still uses the exact same health system.
+  ctx.shadowBlur=0;
+  for(let i=0;i<2;i++){
+    const full=i<(p.health||0);
+    ctx.fillStyle=full?(isTwo?"#55ecff":"#ff86b8"):"rgba(255,255,255,.30)";
+    ctx.strokeStyle=isTwo?"rgba(66,223,255,.36)":"rgba(90,64,85,.16)";
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(-7.5+i*15,-45,4.3,0,Math.PI*2);ctx.fill();ctx.stroke();
+  }
 
-  const bob=Math.sin(performance.now()*.004+p.x*.02)*1.5;
-  ctx.translate(0,bob);
-
-  // Soft shadow
-  ctx.fillStyle="rgba(48,73,94,.18)";
-  ctx.beginPath();
-  ctx.ellipse(3,10,27,16,0,0,Math.PI*2);
-  ctx.fill();
-
-  // Ears
-  const ear=ctx.createLinearGradient(0,-35,0,-12);
-  ear.addColorStop(0,"#ffb7cf");
-  ear.addColorStop(1,"#ff8eb9");
-  ctx.fillStyle=ear;
-
-  ctx.beginPath();
-  ctx.moveTo(-18,-18);
-  ctx.quadraticCurveTo(-30,-37,-12,-29);
-  ctx.quadraticCurveTo(-5,-25,-9,-17);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(18,-18);
-  ctx.quadraticCurveTo(30,-37,12,-29);
-  ctx.quadraticCurveTo(5,-25,9,-17);
-  ctx.closePath();
-  ctx.fill();
-
-  // Cute body
-  const g=ctx.createRadialGradient(-9,-12,2,0,0,31);
-  g.addColorStop(0,"#fff5fb");
-  g.addColorStop(.45,"#ffc4df");
-  g.addColorStop(.82,"#ff99c2");
-  g.addColorStop(1,"#ea6f9d");
-
-  ctx.fillStyle=g;
-  ctx.beginPath();
-  ctx.arc(0,0,28,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.strokeStyle="#d95f8f";
-  ctx.lineWidth=2.5;
-  ctx.stroke();
-
-  // Hair tuft
-  ctx.fillStyle="#ffd86e";
-  ctx.beginPath();
-  ctx.moveTo(-7,-25);
-  ctx.quadraticCurveTo(0,-36,7,-25);
-  ctx.quadraticCurveTo(4,-20,0,-22);
-  ctx.quadraticCurveTo(-4,-20,-7,-25);
-  ctx.fill();
-
-  // Big shiny eyes
-  ctx.fillStyle="#fff";
-  ctx.beginPath();
-  ctx.ellipse(-10,-6,9,11,0,0,Math.PI*2);
-  ctx.ellipse(10,-6,9,11,0,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle="#5a4059";
-  ctx.beginPath();
-  ctx.arc(-8,-4,4.5,0,Math.PI*2);
-  ctx.arc(8,-4,4.5,0,Math.PI*2);
-  ctx.fill();
-
-  // Eye highlights
-  ctx.fillStyle="#fff";
-  ctx.beginPath();
-  ctx.arc(-6.5,-6,1.5,0,Math.PI*2);
-  ctx.arc(9.5,-6,1.5,0,Math.PI*2);
-  ctx.fill();
-
-  // Tiny lashes / brows
-  ctx.strokeStyle="#914f75";
-  ctx.lineWidth=2.2;
-  ctx.beginPath();
-  ctx.moveTo(-18,-15); ctx.lineTo(-13,-17);
-  ctx.moveTo(18,-15); ctx.lineTo(13,-17);
-  ctx.stroke();
-
-  // Snout
-  ctx.fillStyle="#ff8fae";
-  ctx.beginPath();
-  ctx.ellipse(0,10,13,8,0,0,Math.PI*2);
-  ctx.fill();
-
-  ctx.fillStyle="#9d4f69";
-  ctx.beginPath();
-  ctx.ellipse(-5,10,2.7,2.2,0,0,Math.PI*2);
-  ctx.ellipse(5,10,2.7,2.2,0,0,Math.PI*2);
-  ctx.fill();
-
-  // Happy little smile
-  ctx.strokeStyle="#944765";
-  ctx.lineWidth=2.5;
-  ctx.beginPath();
-  ctx.arc(0,14,7,.15,Math.PI-.15);
-  ctx.stroke();
-
-  // Rosy cheeks
-  ctx.fillStyle="rgba(255,103,151,.45)";
-  ctx.beginPath();
-  ctx.ellipse(-19,10,6,3.5,0,0,Math.PI*2);
-  ctx.ellipse(19,10,6,3.5,0,0,Math.PI*2);
-  ctx.fill();
+  if((p.hitFlash||0)>0){
+    ctx.globalAlpha=Math.min(.58,(p.hitFlash/.20)*.58);
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(0,0,31,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+  }
 
   ctx.restore();
 }
@@ -2302,127 +2415,99 @@ function drawPig(p){
 function drawBlock(b){
   if(b.destroyed) return;
 
-  if(level===2){
-    // Futuristic alloy block
-    const g=ctx.createLinearGradient(b.x,b.y,b.x+b.w,b.y);
-    g.addColorStop(0,"#0b263c");
-    g.addColorStop(.48,"#1a5871");
-    g.addColorStop(1,"#071827");
+  const isTwo=level===2;
+  ctx.save();
 
+  if(isTwo){
+    const g=ctx.createLinearGradient(b.x,b.y,b.x+b.w,b.y+b.h);
+    g.addColorStop(0,"#0b263c");g.addColorStop(.48,"#1a5871");g.addColorStop(1,"#071827");
     ctx.fillStyle=g;
-    ctx.fillRect(b.x,b.y,b.w,b.h);
-
-    ctx.strokeStyle="#42dfff";
-    ctx.lineWidth=2.5;
-    ctx.shadowColor="#42dfff";
-    ctx.shadowBlur=8;
-    ctx.strokeRect(b.x,b.y,b.w,b.h);
-    ctx.shadowBlur=0;
+    ctx.strokeStyle=b.booster?"#55ecff":"#42dfff";
+    ctx.lineWidth=b.booster?2.8:2.5;
+    ctx.shadowColor=b.booster?"rgba(85,236,255,.50)":"rgba(66,223,255,.34)";
+    ctx.shadowBlur=b.booster?12:8;
+    ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,Math.min(7,b.h*.25));ctx.fill();ctx.stroke();ctx.shadowBlur=0;
 
     if(b.w>70 || b.h>45){
-      ctx.strokeStyle="rgba(102,240,255,.3)";
-      ctx.lineWidth=1.5;
+      ctx.strokeStyle="rgba(102,240,255,.30)";ctx.lineWidth=1.5;
       ctx.strokeRect(b.x+6,b.y+6,Math.max(1,b.w-12),Math.max(1,b.h-12));
     }
 
-    ctx.strokeStyle="rgba(112,244,255,.42)";
-    ctx.lineWidth=1.5;
+    // Circuit trace.
+    ctx.strokeStyle="rgba(112,244,255,.40)";ctx.lineWidth=1.5;
     const cy=b.y+b.h/2;
-    ctx.beginPath();
-    ctx.moveTo(b.x+8,cy);
-    ctx.lineTo(b.x+20,cy);
-    ctx.lineTo(b.x+28,cy-5);
-    if(b.w>90){
-      ctx.lineTo(b.x+b.w-28,cy-5);
-      ctx.lineTo(b.x+b.w-20,cy);
-      ctx.lineTo(b.x+b.w-8,cy);
-    }else{
-      ctx.lineTo(b.x+b.w-8,cy);
-    }
+    ctx.beginPath();ctx.moveTo(b.x+8,cy);ctx.lineTo(b.x+20,cy);ctx.lineTo(b.x+28,cy-5);
+    if(b.w>90){ctx.lineTo(b.x+b.w-28,cy-5);ctx.lineTo(b.x+b.w-20,cy);ctx.lineTo(b.x+b.w-8,cy)}
+    else{ctx.lineTo(b.x+b.w-8,cy)}
     ctx.stroke();
 
     const nodes=b.w>90?3:2;
     for(let i=0;i<nodes;i++){
-      const x=b.x+12+(b.w-24)*(i/(Math.max(nodes-1,1)));
-      ctx.fillStyle="#55ecff";
-      ctx.shadowColor="#55ecff";
-      ctx.shadowBlur=7;
-      ctx.beginPath();
-      ctx.arc(x,b.y+9,2.5,0,Math.PI*2);
-      ctx.fill();
-      ctx.shadowBlur=0;
+      const x=b.x+12+(b.w-24)*(i/Math.max(nodes-1,1));
+      ctx.fillStyle="#55ecff";ctx.shadowColor="#55ecff";ctx.shadowBlur=7;
+      ctx.beginPath();ctx.arc(x,b.y+9,2.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
     }
 
     if(b.booster){
       const boostCount=b.w>180?3:(b.w>70?2:1);
       for(let i=0;i<boostCount;i++){
-        const bx=b.x+b.w*(i+1)/(boostCount+1);
-        const by=b.y+b.h+4;
-        ctx.fillStyle="#102d42";
-        ctx.strokeStyle="#55ecff";
-        ctx.lineWidth=1.5;
-        ctx.beginPath();
-        ctx.roundRect(bx-8,by-3,16,9,3);
-        ctx.fill();
-        ctx.stroke();
-
+        const bx=b.x+b.w*(i+1)/(boostCount+1),by=b.y+b.h+4;
+        ctx.fillStyle="#102d42";ctx.strokeStyle="#55ecff";ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.roundRect(bx-8,by-3,16,9,3);ctx.fill();ctx.stroke();
         const flame=7+Math.sin(performance.now()*.012+bx)*3;
-        ctx.fillStyle="rgba(70,235,255,.72)";
-        ctx.beginPath();
-        ctx.moveTo(bx-4,by+5);
-        ctx.lineTo(bx+4,by+5);
-        ctx.lineTo(bx,by+5+flame);
-        ctx.closePath();
-        ctx.fill();
+        ctx.fillStyle="rgba(70,235,255,.72)";ctx.shadowColor="#42dfff";ctx.shadowBlur=7;
+        ctx.beginPath();ctx.moveTo(bx-4,by+5);ctx.lineTo(bx+4,by+5);ctx.lineTo(bx,by+5+flame);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
+      }
+    }
+
+    // Damage wear: only visual, based on existing block health.
+    const damage=1-Math.max(0,b.health)/Math.max(1,b.maxHealth||160);
+    if(damage>.08){
+      const count=Math.min(5,1+Math.floor(damage*6));
+      ctx.strokeStyle=`rgba(210,252,255,${.16+.22*damage})`;ctx.lineWidth=1.4;ctx.lineCap="round";
+      for(let i=0;i<count;i++){
+        const seed=(b.spawnX*13+b.spawnY*7+i*31);
+        const sx=b.x+7+(Math.abs(seed)%Math.max(10,b.w-14));
+        const sy=b.y+8+(Math.abs(seed*1.7)%Math.max(8,b.h-16));
+        ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+6,sy+4);ctx.lineTo(sx+3,sy+9);ctx.stroke();
       }
     }
 
     ctx.fillStyle="#9ff7ff";
-    const corners=[
-      [b.x+7,b.y+7],[b.x+b.w-7,b.y+7],
-      [b.x+7,b.y+b.h-7],[b.x+b.w-7,b.y+b.h-7]
-    ];
-    for(const [x,y] of corners){
-      ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
-    }
+    const corners=[[b.x+7,b.y+7],[b.x+b.w-7,b.y+7],[b.x+7,b.y+b.h-7],[b.x+b.w-7,b.y+b.h-7]];
+    for(const [x,y] of corners){ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
     return;
   }
 
-  // LEVEL 1 — CUTE PASTEL BLOCK
+  // Cute Level 1 block.
   const g=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);
-  g.addColorStop(0,"#fff0b5");
-  g.addColorStop(.45,"#ffd58f");
-  g.addColorStop(1,"#f6a96b");
-
-  ctx.fillStyle=g;
-  ctx.strokeStyle="#c97b5b";
-  ctx.lineWidth=3;
-
+  g.addColorStop(0,"#fff0b5");g.addColorStop(.45,"#ffd58f");g.addColorStop(1,"#f6a96b");
+  ctx.fillStyle=g;ctx.strokeStyle="#c97b5b";ctx.lineWidth=3;
+  ctx.shadowColor="rgba(230,146,89,.20)";ctx.shadowBlur=10;
   const radius=Math.min(10,b.h/2,Math.max(3,b.w/8));
-  ctx.beginPath();
-  ctx.roundRect(b.x,b.y,b.w,b.h,radius);
-  ctx.fill();
-  ctx.stroke();
+  ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,radius);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
 
-  // Cute stripe pattern
-  ctx.strokeStyle="rgba(255,255,255,.35)";
-  ctx.lineWidth=2;
-  for(let y=b.y+9;y<b.y+b.h;y+=13){
-    ctx.beginPath();
-    ctx.moveTo(b.x+7,y);
-    ctx.lineTo(b.x+b.w-7,y);
-    ctx.stroke();
-  }
-
-  // Tiny candy-like bolts
+  ctx.strokeStyle="rgba(255,255,255,.38)";ctx.lineWidth=2;
+  for(let y=b.y+9;y<b.y+b.h;y+=13){ctx.beginPath();ctx.moveTo(b.x+7,y);ctx.lineTo(b.x+b.w-7,y);ctx.stroke();}
   ctx.fillStyle="#ff8fbc";
   for(const x of [b.x+8,b.x+b.w-8]){
-    if(x<b.x+b.w-2){
-      ctx.beginPath();
-      ctx.arc(x,b.y+b.h/2,2.5,0,Math.PI*2);
-      ctx.fill();
+    if(x<b.x+b.w-2){ctx.beginPath();ctx.arc(x,b.y+b.h/2,2.5,0,Math.PI*2);ctx.fill();}
+  }
+
+  // Light wear as blocks take damage.
+  const damage=1-Math.max(0,b.health)/Math.max(1,b.maxHealth||100);
+  if(damage>.10){
+    ctx.strokeStyle=`rgba(146,82,64,${.15+.22*damage})`;ctx.lineWidth=1.3;
+    const count=Math.min(4,1+Math.floor(damage*5));
+    for(let i=0;i<count;i++){
+      const seed=b.spawnX*11+b.spawnY*5+i*17;
+      const sx=b.x+6+(Math.abs(seed)%Math.max(8,b.w-12));
+      const sy=b.y+7+(Math.abs(seed*1.3)%Math.max(6,b.h-12));
+      ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+5,sy+4);ctx.lineTo(sx+2,sy+8);ctx.stroke();
     }
   }
+  ctx.restore();
 }
 
 function drawStar(s){
@@ -2503,64 +2588,35 @@ function drawRing(q){
 ========================= */
 
 function drawTrajectory(){
+  if(!dragging||!currentRobo||!currentRobo.ready) return;
 
-  if(
-    !dragging ||
-    !currentRobo ||
-    !currentRobo.ready
-  )
-    return;
-
-  let x=currentRobo.x;
-  let y=currentRobo.y;
-
-  let vx=
-    (SLING.x-x)*POWER_MULT;
-
-  let vy=
-    (SLING.y-y)*POWER_MULT;
-
+  let x=currentRobo.x,y=currentRobo.y;
+  const boost=level===2?1.35:1;
+  let vx=(SLING.x-x)*POWER_MULT*boost;
+  let vy=(SLING.y-y)*POWER_MULT*boost;
+  let fuel=level===2?1.15:0;
+  const thrustPower=level===2?620:0;
   const dt=1/60;
 
   ctx.save();
-
-  ctx.fillStyle="rgba(255,255,255,.85)";
-
+  ctx.fillStyle=level===1?"rgba(255,255,255,.86)":"rgba(255,255,255,.92)";
   for(let t=0;t<4;t+=dt){
-
-    vy+=G*dt;
-
-    vx*=Math.pow(.999,dt*60);
-    vy*=Math.pow(.999,dt*60);
-
-    x+=vx*dt;
-    y+=vy*dt;
-
-    if(y+26>=GROUND)
-      break;
-
-    if(
-      Math.floor(t*12)!==
-      Math.floor((t-dt)*12)
-    ){
-
-      ctx.beginPath();
-
-      ctx.arc(
-        x,
-        y,
-        4,
-        0,
-        Math.PI*2
-      );
-
-      ctx.fill();
+    if(fuel>0){
+      const speed=Math.hypot(vx,vy);
+      if(speed>10){
+        const nx=vx/speed,ny=vy/speed,thrust=Math.min(fuel,dt)*thrustPower;
+        vx+=nx*thrust;vy+=ny*thrust;
+      }
+      fuel=Math.max(0,fuel-dt);
+    }
+    vy+=G*dt;vx*=Math.pow(.999,dt*60);vy*=Math.pow(.999,dt*60);x+=vx*dt;y+=vy*dt;
+    if(y+26>=GROUND) break;
+    if(Math.floor(t*12)!==Math.floor((t-dt)*12)){
+      ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
     }
   }
-
   ctx.restore();
 }
-
 
 function drawParticles(){
 
@@ -2569,7 +2625,7 @@ function drawParticles(){
     ctx.globalAlpha=
       Math.max(0,p.life);
 
-    ctx.fillStyle="#ffd166";
+    ctx.fillStyle=p.color||"#ffd166";
 
     ctx.beginPath();
 
@@ -2593,44 +2649,29 @@ function drawParticles(){
 ========================= */
 
 function draw(){
+  const cssW=Math.max(320,window.innerWidth),cssH=Math.max(240,window.innerHeight);
+  ctx.setTransform(view.dpr,0,0,view.dpr,0,0);
+  ctx.clearRect(0,0,cssW,cssH);
+  ctx.fillStyle=level===1?"#dff7ff":"#020611";ctx.fillRect(0,0,cssW,cssH);
 
-  ctx.clearRect(
-    0,0,W,H
-  );
+  const shake=cameraShake||0;
+  const sx=shake?(Math.random()-.5)*shake:0,sy=shake?(Math.random()-.5)*shake:0;
+  ctx.save();
+  ctx.translate(view.ox+sx,view.oy+sy);ctx.scale(view.scale,view.scale);
 
   drawBackground();
+  if(level===1){cloud(180,110,1);cloud(540,90,.8);cloud(920,150,.7);}
 
-  if(level===1){
-    cloud(180,110,1);
-    cloud(540,90,.8);
-    cloud(920,150,.7);
-  }
-
-  for(const b of blocks)
-    drawBlock(b);
-
-  for(const q of rings)
-    drawRing(q);
-
-  for(const st of stars)
-    drawStar(st);
-
-  for(const p of pigs)
-    drawPig(p);
-
-  for(const r of robos)
-    drawRobo(r);
-
-  drawSling();
-
-  drawTrajectory();
-
-  if(currentRobo)
-    drawRobo(currentRobo);
-
+  for(const b of blocks) drawBlock(b);
+  for(const q of rings) drawRing(q);
+  for(const st of stars) drawStar(st);
+  for(const p of pigs) drawPig(p);
+  for(const r of robos) drawRobo(r);
+  drawSling();drawTrajectory();
+  if(currentRobo) drawRobo(currentRobo);
   drawParticles();
+  ctx.restore();
 }
-
 
 /* =========================
    GAME LOOP
@@ -2657,6 +2698,7 @@ function loop(now){
 
   updateRobos(dt);
   updateParticles(dt);
+  cameraShake=Math.max(0,cameraShake-dt*18);
 
 
   if(!gameWon && pigs.length && pigs.every(p=>!p.alive)){
@@ -2668,8 +2710,8 @@ function loop(now){
       gameWon=true;
       document.getElementById("msg").innerHTML=
         level===2
-          ? "LEVEL 2 CLEARED<br><small>Future sector secured</small>"
-          : "TARGETS CLEARED<br><small>Score: "+score+"</small>";
+          ? "LEVEL 2 CLEARED<br><small>Rainbow kingdom secured · Score: "+score+"</small>"
+          : "TARGETS CLEARED<br><small>Cute city cleared · Score: "+score+"</small>";
       document.getElementById("msg").style.display="block";
     }
   }
@@ -2692,7 +2734,6 @@ function switchLevel(newLevel){
   levelShots=0;
   gameWon=false;
   structureActivated=false;
-  structureActivated=false;
   dragging=false;
   keyboardAim=0;
   keyboardPower=0;
@@ -2701,11 +2742,14 @@ function switchLevel(newLevel){
   hardwarePower=0;
   robos=[];
   particles=[];
+  cameraShake=0;
+  last=performance.now();
   createLevel();
   currentRobo=newRobo();
   if(controlMode==="serial") updateHardwarePouch();
   updateUI();
   document.getElementById("msg").style.display="none";
+  document.getElementById("power").style.display="none";
 }
 
 document.getElementById("level1Btn").onclick=()=>switchLevel(1);
